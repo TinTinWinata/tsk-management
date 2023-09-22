@@ -1,3 +1,4 @@
+import "@asseinfo/react-kanban/dist/styles.css";
 import "../css/app.css";
 import "./bootstrap";
 

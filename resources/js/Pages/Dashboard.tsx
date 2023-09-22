@@ -1,8 +1,20 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { PageProps } from "@/types";
+import { User } from "@/types";
+// import Board from "@asseinfo/react-kanban";
 import { Head } from "@inertiajs/react";
 
-export default function Dashboard({ auth }: PageProps) {
+export interface IDashboardProps {
+    auth: { user: User };
+    dates: string[];
+}
+export default function Dashboard({ auth, dates }: IDashboardProps) {
+    const board = {
+        columns: dates.map((date, index: number) => ({
+            id: index,
+            title: date,
+        })),
+    };
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -13,16 +25,7 @@ export default function Dashboard({ auth }: PageProps) {
             }
         >
             <Head title="Dashboard" />
-
-            <div className="py-12">
-                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                    <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                        <div className="p-6 text-gray-900 dark:text-gray-100">
-                            You're logged in!
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {/* <Board initialBoard={board} />a */}
         </AuthenticatedLayout>
     );
 }
