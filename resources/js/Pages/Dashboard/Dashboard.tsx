@@ -1,20 +1,15 @@
+import Schedule from "@/Components/Kanban/Schedule";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { User } from "@/types";
+import { IScheduleData } from "@/types/schedule-data";
 // import Board from "@asseinfo/react-kanban";
 import { Head } from "@inertiajs/react";
 
 export interface IDashboardProps {
     auth: { user: User };
-    dates: string[];
+    data: IScheduleData;
 }
-export default function Dashboard({ auth, dates }: IDashboardProps) {
-    const board = {
-        columns: dates.map((date, index: number) => ({
-            id: index,
-            title: date,
-        })),
-    };
-
+export default function Dashboard({ auth, data }: IDashboardProps) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -25,7 +20,7 @@ export default function Dashboard({ auth, dates }: IDashboardProps) {
             }
         >
             <Head title="Dashboard" />
-            {/* <Board initialBoard={board} />a */}
+            <Schedule datas={data}></Schedule>
         </AuthenticatedLayout>
     );
 }

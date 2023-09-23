@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
+            $table->dateTime('date');
+            $table->string('title');
+            $table->integer('position');
+            $table->boolean('is_done');
             $table->timestamps();
         });
     }

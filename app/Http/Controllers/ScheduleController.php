@@ -20,17 +20,36 @@ class ScheduleController extends Controller
         $currentDate = Carbon::now();
         $dates = [];
 
-
         // Get Before Dates
         for ($i = $beforeDate - 1; $i >= 0; $i--) {
-            $date = $currentDate->copy()->subDay($i)->format('D d - m - Y');
-            array_push($dates, $date);
+            $copyDate = null;
+            $copyDate = $currentDate->copy()->subDay($i);
+            $date = $copyDate->format('Y-m-d');
+            $formattedDate = $copyDate->format('D d - m - Y');
+            $dates[$date]['formatted'] = $formattedDate;
+            $dates[$date]['schedules'] = [];
         }
 
         // Get After Dates
         for ($i = 1; $i <= $afterDate; $i++) {
-            $date = $currentDate->copy()->addDays($i)->format('D d - m - Y');
-            array_push($dates, $date);
+            $copyDate = null;
+            $copyDate = $currentDate->copy()->addDay($i);
+            $date = $copyDate->format('Y-m-d');
+            $formattedDate = $copyDate->format('D d - m - Y');
+            $dates[$date]['formatted'] = $formattedDate;
+            $dates[$date]['schedules'] = [];
+        }
+        return $dates;
+    }
+
+    public function getUserSchedule()
+    {
+        $dates = ScheduleController::getDates();
+
+        $user = auth()->user();
+        foreach ($user->schedules as $schedule) {
+            $dateStr = Carbon::parse($schedule->date)->format('Y-m-d');
+            array_push($dates[$dateStr]['schedules'], $schedule);
         }
         return $dates;
     }
@@ -38,8 +57,8 @@ class ScheduleController extends Controller
     public function index()
     {
         if (auth()->check()) {
-            return Inertia::render('Dashboard', [
-                'dates' => ScheduleController::getDates()
+            return Inertia::render('Dashboard/Dashboard', [
+                'data' => $this->getUserSchedule()
             ]);
         } else {
             return Inertia::render('Auth/Login');

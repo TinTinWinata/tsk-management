@@ -19,5 +19,9 @@ class DatabaseSeeder extends Seeder
             'email' => 'tintin@gmail.com',
             'password' => bcrypt('asd')
         ]);
+
+        $this->call([
+            ScheduleSeeder::class
+        ]);
     }
 }
