@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Console\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
 use Inertia\Inertia;
+use Illuminate\Support\Str;
 
 class ScheduleController extends Controller
 {
@@ -40,6 +42,45 @@ class ScheduleController extends Controller
             $dates[$date]['schedules'] = [];
         }
         return $dates;
+    }
+
+    public function save(Request $req)
+    {
+        $user = $req->user();
+        $data = $req->all();
+        $schedules = [];
+        $i = 0;
+
+        $startDate = null;
+        $endDate = null;
+
+        foreach ($data as $date => $detail) {
+            if ($i === 0) {
+                $startDate =  $date;
+            }
+            if ($i === count($data) - 1) {
+                $endDate = $date;
+            }
+            foreach ($detail['schedules'] as $schedule) {
+                $schedule['id'] = Str::uuid();
+                unset($schedule['created_at']);
+                unset($schedule['updated_at']);
+                $schedule['date'] = $date;
+                $schedule['user_id'] = $user->id;
+                array_push($schedules, $schedule);
+            }
+            $i++;
+        }
+
+        Schedule::where('user_id', $user->id)
+            ->whereBetween(
+                'date',
+                [$startDate, $endDate]
+            )
+            ->delete();
+
+        Schedule::insert($schedules);
+        return response()->json('Succesfully saved new schedules', 200);
     }
 
     public function getUserSchedule()

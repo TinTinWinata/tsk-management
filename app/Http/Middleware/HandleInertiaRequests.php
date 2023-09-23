@@ -30,11 +30,17 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $token = null;
+        if (auth()->check()) {
+            $request->user()->tokens()->delete();
+            $token = $request->user()->createToken('TSK_API')->plainTextToken;
+        }
         return [
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
             ],
+            'token' => $token,
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),

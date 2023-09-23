@@ -1,15 +1,22 @@
+import { ISchedule } from "@/types/schedule";
 import { IScheduleData } from "@/types/schedule-data";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { DragDropContext, OnDragEndResponder } from "react-beautiful-dnd";
+import { v4 as uuidv4 } from "uuid";
 import ScheduleCard from "./ScheduleCard";
 
 export interface IScheduleProps {
     datas: IScheduleData;
+    token: string;
 }
 
-export default function Schedule({ datas: defaultSchedules }: IScheduleProps) {
+export default function Schedule({
+    datas: defaultSchedules,
+    token,
+}: IScheduleProps) {
     const [datas, setDatas] = useState<IScheduleData>(defaultSchedules);
-
+    console.log(token);
     const cloneDatas = () => {
         return JSON.parse(JSON.stringify(datas)) as IScheduleData;
     };
@@ -22,8 +29,22 @@ export default function Schedule({ datas: defaultSchedules }: IScheduleProps) {
         });
     }, []);
 
-    const saveDatas = (datas: IScheduleData) => {
+    const saveDatas = async (datas: IScheduleData) => {
         setDatas(datas);
+        console.log(datas);
+        try {
+            const response = await axios.post("/api/schedule/save", datas, {
+                headers: { Authorization: "Bearer " + token },
+            });
+        } catch (err) {
+            console.log("err : ", err);
+        }
+    };
+
+    const handleUnFocusText = (text: string, date: string, index: number) => {
+        const newData = cloneDatas();
+        newData[date].schedules[index].title = text;
+        saveDatas(newData);
     };
 
     const onDragEnd: OnDragEndResponder = async (e) => {
@@ -65,6 +86,21 @@ export default function Schedule({ datas: defaultSchedules }: IScheduleProps) {
         saveDatas(newData);
     };
 
+    const newSchedule = (): ISchedule => {
+        return {
+            id: uuidv4(),
+            is_done: false,
+            position: 0,
+            title: "",
+        };
+    };
+
+    const handleNewTask = (date: string) => {
+        const newData = cloneDatas();
+        newData[date].schedules = [newSchedule(), ...newData[date].schedules];
+        setDatas(newData);
+    };
+
     return (
         <DragDropContext onDragEnd={onDragEnd}>
             <div className="center min-h-screen w-full">
@@ -73,6 +109,8 @@ export default function Schedule({ datas: defaultSchedules }: IScheduleProps) {
                         const data = datas[val];
                         return (
                             <ScheduleCard
+                                handleUnFocusText={handleUnFocusText}
+                                handleNewTask={handleNewTask}
                                 date={val}
                                 index={index}
                                 key={index}
