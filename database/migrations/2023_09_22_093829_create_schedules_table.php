@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->dateTime('date');
             $table->string('title');
-            $table->integer('position');
+            $table->integer('position')->nullable();
             $table->boolean('is_done');
             $table->timestamps();
         });
