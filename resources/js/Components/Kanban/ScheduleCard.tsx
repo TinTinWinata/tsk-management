@@ -1,6 +1,7 @@
 import { ISchedule } from "@/types/schedule";
 import { Droppable } from "react-beautiful-dnd";
 import { FcBiohazard, FcEngineering } from "react-icons/fc";
+import { IHoveredData } from "./Schedule";
 import ScheduleCardDetail from "./ScheduleCardDetail";
 
 interface IScheduleCardProps {
@@ -8,7 +9,9 @@ interface IScheduleCardProps {
     schedules: ISchedule[];
     index: number;
     date: string;
+    hovered?: IHoveredData | undefined;
     handleNewTask?: (date: string) => void;
+    onCheck?: (bool: boolean) => void;
     handleUnFocusText?: (text: string, date: string, index: number) => void;
 }
 
@@ -19,8 +22,17 @@ export default function ScheduleCard({
     date,
     handleNewTask,
     handleUnFocusText,
+    hovered,
+    onCheck,
 }: IScheduleCardProps) {
     const isOnLeft = index % 2 === 0;
+    const isHovered = hovered && hovered.date === date;
+    const isHoveredToNewDates = isHovered && hovered.sourceDate !== date;
+    const top =
+        isHovered &&
+        (hovered.index / (schedules.length + (isHoveredToNewDates ? 1 : 0))) *
+            100;
+
     return (
         <div className="flex flex-col gap-2 min-h-[250px]">
             <div
@@ -40,36 +52,44 @@ export default function ScheduleCard({
             <hr />
             <div
                 onClick={() => handleNewTask(date)}
-                className="cursor-pointer hover:bg-gray-50 transition-all p-2 border border-gray-300 border-opacity-30  text-sm"
+                className="cursor-pointer  hover:bg-gray-50 transition-all p-2 border border-gray-300 border-opacity-30  text-sm"
             >
                 New Task
             </div>
-            <Droppable droppableId={date}>
-                {(droppableProvided, snapshot) => (
-                    <div
-                        className={
-                            snapshot.isDraggingOver
-                                ? "relative transition-all div-is-dragging"
-                                : ""
-                        }
-                        ref={droppableProvided.innerRef}
-                        {...droppableProvided.droppableProps}
-                    >
-                        {droppableProvided.placeholder}
-                        {schedules.map((schedule, index: number) => (
-                            <ScheduleCardDetail
-                                handleUnFocusText={(
-                                    text: string,
-                                    index: number
-                                ) => handleUnFocusText(text, date, index)}
-                                index={index}
-                                position={index}
-                                key={index}
-                                schedule={schedule}
-                            />
-                        ))}
-                    </div>
-                )}
+
+            <Droppable droppableId={date} type="COLUMN" direction="vertical">
+                {(droppableProvided, snapshot) => {
+                    return (
+                        <div
+                            className={`relative ${
+                                snapshot.isDraggingOver ? "  " : ""
+                            }`}
+                            ref={droppableProvided.innerRef}
+                            {...droppableProvided.droppableProps}
+                        >
+                            {schedules.map((schedule, index: number) => (
+                                <ScheduleCardDetail
+                                    onCheck={onCheck}
+                                    handleUnFocusText={(
+                                        text: string,
+                                        index: number
+                                    ) => handleUnFocusText(text, date, index)}
+                                    index={index}
+                                    position={index}
+                                    key={index}
+                                    schedule={schedule}
+                                />
+                            ))}
+                            {isHovered && snapshot.isDraggingOver && (
+                                <div
+                                    style={{ top: `${top}%` }}
+                                    className="absolute bg-sky-100 w-full h-1 left-0"
+                                ></div>
+                            )}
+                            {droppableProvided.placeholder}
+                        </div>
+                    );
+                }}
             </Droppable>
         </div>
     );

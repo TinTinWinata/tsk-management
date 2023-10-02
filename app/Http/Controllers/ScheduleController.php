@@ -61,12 +61,13 @@ class ScheduleController extends Controller
             if ($i === count($data) - 1) {
                 $endDate = $date;
             }
-            foreach ($detail['schedules'] as $schedule) {
+            foreach ($detail['schedules'] as $key => $schedule) {
                 $schedule['id'] = Str::uuid();
                 unset($schedule['created_at']);
                 unset($schedule['updated_at']);
                 $schedule['date'] = $date;
                 $schedule['user_id'] = $user->id;
+                $schedule['position'] = $key;
                 array_push($schedules, $schedule);
             }
             $i++;
@@ -88,7 +89,9 @@ class ScheduleController extends Controller
         $dates = ScheduleController::getDates();
 
         $user = auth()->user();
-        foreach ($user->schedules as $schedule) {
+        $schedules = Schedule::where('user_id', $user->id)
+            ->orderBy('position', 'asc')->get();
+        foreach ($schedules as $schedule) {
             $dateStr = Carbon::parse($schedule->date)->format('Y-m-d');
             array_push($dates[$dateStr]['schedules'], $schedule);
         }
