@@ -8,6 +8,8 @@ interface IScheduleCardProps {
     schedules: ISchedule[];
     index: number;
     date: string;
+    handleNewTask?: (date: string) => void;
+    handleUnFocusText?: (text: string, date: string, index: number) => void;
 }
 
 export default function ScheduleCard({
@@ -15,6 +17,8 @@ export default function ScheduleCard({
     formatted,
     index,
     date,
+    handleNewTask,
+    handleUnFocusText,
 }: IScheduleCardProps) {
     const isOnLeft = index % 2 === 0;
     return (
@@ -34,7 +38,10 @@ export default function ScheduleCard({
                 <div className="text-xl font-semibold">{formatted}</div>
             </div>
             <hr />
-            <div className="cursor-pointer hover:bg-gray-50 transition-all p-2 border border-gray-300 border-opacity-30  text-sm">
+            <div
+                onClick={() => handleNewTask(date)}
+                className="cursor-pointer hover:bg-gray-50 transition-all p-2 border border-gray-300 border-opacity-30  text-sm"
+            >
                 New Task
             </div>
             <Droppable droppableId={date}>
@@ -51,6 +58,11 @@ export default function ScheduleCard({
                         {droppableProvided.placeholder}
                         {schedules.map((schedule, index: number) => (
                             <ScheduleCardDetail
+                                handleUnFocusText={(
+                                    text: string,
+                                    index: number
+                                ) => handleUnFocusText(text, date, index)}
+                                index={index}
                                 position={index}
                                 key={index}
                                 schedule={schedule}

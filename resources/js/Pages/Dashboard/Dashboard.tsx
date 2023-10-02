@@ -7,9 +7,10 @@ import { Head } from "@inertiajs/react";
 
 export interface IDashboardProps {
     auth: { user: User };
+    token: string;
     data: IScheduleData;
 }
-export default function Dashboard({ auth, data }: IDashboardProps) {
+export default function Dashboard({ auth, data, token }: IDashboardProps) {
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -20,7 +21,7 @@ export default function Dashboard({ auth, data }: IDashboardProps) {
             }
         >
             <Head title="Dashboard" />
-            <Schedule datas={data}></Schedule>
+            <Schedule token={token} datas={data}></Schedule>
         </AuthenticatedLayout>
     );
 }
