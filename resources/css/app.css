@@ -11,24 +11,24 @@
 /* ===== Scrollbar CSS ===== */
   /* Firefox */
   * {
-  scrollbar-width: auto;
-  scrollbar-color: #545454 #ffffff;
-}
+    scrollbar-width: auto;
+    scrollbar-color: #4f4f4f #ffffff;
+  }
 
-/* Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
-  width: 16px;
-}
+  /* Chrome, Edge, and Safari */
+  *::-webkit-scrollbar {
+    width: 10px;
+  }
 
-*::-webkit-scrollbar-track {
-  background: #ffffff;
-}
+  *::-webkit-scrollbar-track {
+    background: #ffffff;
+  }
 
-*::-webkit-scrollbar-thumb {
-  background-color: #545454;
-  border-radius: 10px;
-  border: 3px solid #ffffff;
-}
+  *::-webkit-scrollbar-thumb {
+    background-color: #4f4f4f;
+    border-radius: 100px;
+    border: 3px solid #ffffff;
+  }
 
 
 .div-is-dragging::after{
@@ -40,3 +40,5 @@
     height: 5px;
     background-color: rgb(26, 144, 255, 0.25);
 }
+
+
