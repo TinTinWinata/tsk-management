@@ -10,6 +10,10 @@ import {
     useState,
 } from "react";
 
+export interface IDropdownProps extends PropsWithChildren {
+    onToggle?: (val: boolean) => void;
+}
+
 const DropDownContext = createContext<{
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
@@ -20,11 +24,14 @@ const DropDownContext = createContext<{
     toggleOpen: () => {},
 });
 
-const Dropdown = ({ children }: PropsWithChildren) => {
+const Dropdown = ({ children, onToggle }: IDropdownProps) => {
     const [open, setOpen] = useState(false);
 
     const toggleOpen = () => {
-        setOpen((previousState) => !previousState);
+        setOpen((previousState) => {
+            onToggle(!previousState);
+            return !previousState;
+        });
     };
 
     return (
@@ -34,7 +41,7 @@ const Dropdown = ({ children }: PropsWithChildren) => {
     );
 };
 
-const Trigger = ({ children }: PropsWithChildren) => {
+const Trigger = ({ children, onToggle }: IDropdownProps) => {
     const { open, setOpen, toggleOpen } = useContext(DropDownContext);
 
     return (
@@ -43,8 +50,11 @@ const Trigger = ({ children }: PropsWithChildren) => {
 
             {open && (
                 <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setOpen(false)}
+                    className="cursor-pointer fixed inset-0 z-40"
+                    onClick={() => {
+                        onToggle && onToggle(false);
+                        setOpen(false);
+                    }}
                 ></div>
             )}
         </>
@@ -56,10 +66,12 @@ const Content = ({
     width = "48",
     contentClasses = "overflow-hidden bg-white dark:bg-gray-700",
     children,
+    onClickOutside,
 }: PropsWithChildren<{
     align?: "left" | "right";
     width?: "48" | "60" | "80";
     contentClasses?: string;
+    onClickOutside?: (val: boolean) => void;
 }>) => {
     const { open, setOpen } = useContext(DropDownContext);
 
@@ -83,6 +95,11 @@ const Content = ({
         widthClasses = "w-80";
     }
 
+    const handleClick = () => {
+        setOpen(false);
+        onClickOutside && onClickOutside(false);
+    };
+
     return (
         <>
             <Transition
@@ -97,7 +114,7 @@ const Content = ({
             >
                 <div
                     className={`left-2 absolute z-50 mt-2 rounded-md shadow-lg ${alignmentClasses} ${widthClasses}`}
-                    onClick={() => setOpen(false)}
+                    onClick={handleClick}
                 >
                     <div
                         className={

@@ -1,52 +1,66 @@
 import { User } from "@/types";
-import { Link } from "@inertiajs/react";
-import { PiDotsSixVerticalBold } from "react-icons/pi";
-import Dropdown from "./Dropdown";
-import Initial from "./Initial";
+import { useEffect, useState } from "react";
 import Profile from "./Profile";
 
 interface ISidebarProps {
     user: User;
     open: boolean;
+    hover: boolean;
 }
 
-export default function Sidebar({ user, open }: ISidebarProps) {
+export default function Sidebar({ user, open, hover }: ISidebarProps) {
+    const [stay, setStay] = useState<boolean>(false);
+    const [profile, setProfile] = useState<boolean>(false);
+
+    const width = "min-w-[200px]";
+    const timeToClose = 500;
+
+    useEffect(() => {
+        if (open === false) {
+            setStay(true);
+            setTimeout(() => {
+                setStay(false);
+            }, timeToClose);
+        }
+    }, [open]);
+
+    const handleOnMouseLeave = () => {
+        // if (!profile) setStay(false);
+    };
+
+    const handleOnProfileClick = (val: boolean) => {
+        // setProfile(val);
+    };
+
+    const handleOnProfileClickOutside = (val: boolean) => {
+        // setStay(false);
+    };
+
     return (
         <div
             className={`${
-                open ? "w-[250px]" : "w-0 overflow-hidden "
+                open ? width : "w-0 overflow-hidden "
             } duration-300 transition-all min-h-screen bg-gray-100`}
         >
-            <Dropdown>
-                <Dropdown.Trigger>
-                    <Profile user={user} />
-                </Dropdown.Trigger>
-
-                <Dropdown.Content width="80">
-                    <div className="pt-3 mx-2 w-full p-1 text-gray-500 text-xs font-semibold">
-                        {user.email}
-                    </div>
-                    <Link
-                        href={route("profile.edit")}
-                        className="my-2 cursor-pointer transition-all duration-200 hover:bg-gray-50 flex items-center p-2 gap-2"
-                    >
-                        <PiDotsSixVerticalBold className="text-gray-400" />
-                        <Initial initial={user.name} size="xl" />
-                        <div className="flex flex-cols items-center justify-center text-gray-700">
-                            {user.name}
-                        </div>
-                    </Link>
-                    <Dropdown.Border />
-                    <Dropdown.Link
-                        href={route("logout")}
-                        method="post"
-                        as="button"
-                    >
-                        Log Out
-                    </Dropdown.Link>
-                </Dropdown.Content>
-            </Dropdown>
-            {/* <div className="p-3">Search</div> */}
+            <div
+                onMouseEnter={() => setStay(true)}
+                onMouseLeave={handleOnMouseLeave}
+                className={`${width} ${
+                    open
+                        ? " top-0 "
+                        : ` bg-white sidebar-background ${
+                              hover || stay
+                                  ? "translate-x-[0%]"
+                                  : "translate-x-[-100%]"
+                          } shadow-xl top-[50px] h-[60%]`
+                } transition-all fixed z-50 duration-300`}
+            >
+                <Profile
+                    onClickOutside={handleOnProfileClickOutside}
+                    onClick={handleOnProfileClick}
+                    user={user}
+                />
+            </div>
         </div>
     );
 }
