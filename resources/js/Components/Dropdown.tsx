@@ -29,7 +29,7 @@ const Dropdown = ({ children, onToggle }: IDropdownProps) => {
 
     const toggleOpen = () => {
         setOpen((previousState) => {
-            onToggle(!previousState);
+            onToggle && onToggle(!previousState);
             return !previousState;
         });
     };
@@ -50,7 +50,7 @@ const Trigger = ({ children, onToggle }: IDropdownProps) => {
 
             {open && (
                 <div
-                    className="cursor-pointer fixed inset-0 z-40"
+                    className="cursor-pointer w-[9999px] h-[9999px] top-[-100%] left-[-100%] fixed inset-0 z-40"
                     onClick={() => {
                         onToggle && onToggle(false);
                         setOpen(false);

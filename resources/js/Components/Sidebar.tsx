@@ -10,30 +10,33 @@ interface ISidebarProps {
 
 export default function Sidebar({ user, open, hover }: ISidebarProps) {
     const [stay, setStay] = useState<boolean>(false);
-    const [profile, setProfile] = useState<boolean>(false);
+    const [first, setFirst] = useState<boolean>(true);
 
     const width = "min-w-[200px]";
     const timeToClose = 500;
 
     useEffect(() => {
-        if (open === false) {
+        if (open === false && !first) {
             setStay(true);
             setTimeout(() => {
                 setStay(false);
             }, timeToClose);
         }
+        if (first) setFirst(false);
     }, [open]);
 
-    const handleOnMouseLeave = () => {
-        // if (!profile) setStay(false);
+    const closeStay = (time: number = 500) => {
+        setTimeout(() => {
+            if (stay) setStay(false);
+        }, time);
     };
 
-    const handleOnProfileClick = (val: boolean) => {
-        // setProfile(val);
+    const handleOnMouseLeave = () => {
+        closeStay(350);
     };
 
     const handleOnProfileClickOutside = (val: boolean) => {
-        // setStay(false);
+        closeStay();
     };
 
     return (
@@ -57,7 +60,6 @@ export default function Sidebar({ user, open, hover }: ISidebarProps) {
             >
                 <Profile
                     onClickOutside={handleOnProfileClickOutside}
-                    onClick={handleOnProfileClick}
                     user={user}
                 />
             </div>
