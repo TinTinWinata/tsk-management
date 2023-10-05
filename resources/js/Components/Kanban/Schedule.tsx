@@ -1,6 +1,6 @@
-import { ISchedule } from "@/types/schedule";
-import { IScheduleData } from "@/types/schedule-data";
-import { swapItems } from "@/utils/Array";
+import { ISchedule } from "@/Types/schedule";
+import { IScheduleData } from "@/Types/schedule-data";
+import { swapItems } from "@/Util/Array";
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import {

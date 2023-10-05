@@ -1,4 +1,4 @@
-import { IChildrenProps } from "@/types/children";
+import { IChildrenProps } from "@/Types/children";
 
 interface IIconProps extends IChildrenProps {
     onClick?: () => void;

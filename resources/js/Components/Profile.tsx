@@ -1,4 +1,4 @@
-import { User } from "@/types";
+import { User } from "@/Types";
 import { Link } from "@inertiajs/react";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import Dropdown from "./Dropdown";

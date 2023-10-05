@@ -1,6 +1,8 @@
-import { User } from "@/types";
+import { User } from "@/Types";
 import { useEffect, useState } from "react";
+import { RxRocket } from "react-icons/rx";
 import Profile from "./Profile";
+import SidebarMenu from "./SidebarMenu";
 
 interface ISidebarProps {
     user: User;
@@ -43,7 +45,7 @@ export default function Sidebar({ user, open, hover }: ISidebarProps) {
         <div
             className={`${
                 open ? width : "w-0 overflow-hidden "
-            } duration-300 transition-all min-h-screen bg-gray-100`}
+            } duration-300 transition-all min-h-screen bg-sidebar border border-r`}
         >
             <div
                 onMouseEnter={() => setStay(true)}
@@ -62,6 +64,7 @@ export default function Sidebar({ user, open, hover }: ISidebarProps) {
                     onClickOutside={handleOnProfileClickOutside}
                     user={user}
                 />
+                <SidebarMenu icon={<RxRocket />} name="Line" />
             </div>
         </div>
     );

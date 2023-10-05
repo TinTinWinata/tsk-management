@@ -1,4 +1,4 @@
-import { ISchedule } from "@/types/schedule";
+import { ISchedule } from "@/Types/schedule";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Draggable } from "react-beautiful-dnd";
 import { GoMultiSelect } from "react-icons/go";

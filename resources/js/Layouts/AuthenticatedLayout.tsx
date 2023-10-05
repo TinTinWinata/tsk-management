@@ -1,6 +1,6 @@
 import Icon from "@/Components/Icon";
 import Sidebar from "@/Components/Sidebar";
-import { User } from "@/types";
+import { User } from "@/Types";
 import { Link } from "@inertiajs/react";
 import { PropsWithChildren, ReactNode, useState } from "react";
 import { RxHamburgerMenu, RxLayers } from "react-icons/rx";

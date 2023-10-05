@@ -12,6 +12,10 @@ export default {
     darkMode: "class",
     theme: {
         extend: {
+            colors: {
+                sidebar: "#FBFBFA",
+                hover: "#EFEFEF",
+            },
             fontFamily: {
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
             },

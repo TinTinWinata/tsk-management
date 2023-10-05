@@ -1,4 +1,4 @@
-import { ISchedule } from "@/types/schedule";
+import { ISchedule } from "@/Types/schedule";
 import { Droppable } from "react-beautiful-dnd";
 import { FcBiohazard, FcEngineering } from "react-icons/fc";
 import { IHoveredData } from "./Schedule";

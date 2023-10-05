@@ -1,7 +1,7 @@
 import Schedule from "@/Components/Kanban/Schedule";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { User } from "@/types";
-import { IScheduleData } from "@/types/schedule-data";
+import { User } from "@/Types";
+import { IScheduleData } from "@/Types/schedule-data";
 // import Board from "@asseinfo/react-kanban";
 import { Head } from "@inertiajs/react";
 

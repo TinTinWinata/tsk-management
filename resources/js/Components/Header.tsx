@@ -1,4 +1,4 @@
-import { User } from "@/types";
+import { User } from "@/Types";
 import { Link } from "@inertiajs/react";
 import { useState } from "react";
 import ApplicationLogo from "./ApplicationLogo";
