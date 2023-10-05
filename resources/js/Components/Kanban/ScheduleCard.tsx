@@ -61,7 +61,7 @@ export default function ScheduleCard({
                 {(droppableProvided, snapshot) => {
                     return (
                         <div
-                            className={`relative ${
+                            className={`relative h-32 ${
                                 snapshot.isDraggingOver ? "  " : ""
                             }`}
                             ref={droppableProvided.innerRef}
