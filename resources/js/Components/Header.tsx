@@ -1,13 +1,13 @@
-import { User } from "@/Types";
 import { Link } from "@inertiajs/react";
 import { useState } from "react";
 import ApplicationLogo from "./ApplicationLogo";
 import Dropdown from "./Dropdown";
 import NavLink from "./NavLink";
 import ResponsiveNavLink from "./ResponsiveNavLink";
+import { IUser } from "@/Types/page";
 
 interface IHeaderProps {
-    user: User;
+    user: IUser;
 }
 
 export default function Header({ user }: IHeaderProps) {

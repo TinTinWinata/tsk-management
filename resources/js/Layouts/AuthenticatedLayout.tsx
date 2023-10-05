@@ -1,6 +1,6 @@
 import Icon from "@/Components/Icon";
 import Sidebar from "@/Components/Sidebar";
-import { User } from "@/Types";
+import { IMonthData, IUser } from "@/Types/page";
 import { Link } from "@inertiajs/react";
 import { PropsWithChildren, ReactNode, useState } from "react";
 import { RxHamburgerMenu, RxLayers } from "react-icons/rx";
@@ -9,7 +9,12 @@ export default function Authenticated({
     user,
     header,
     children,
-}: PropsWithChildren<{ user: User; header?: ReactNode }>) {
+    monthData,
+}: PropsWithChildren<{
+    user: IUser;
+    header?: ReactNode;
+    monthData: IMonthData[];
+}>) {
     const [sidebar, setSidebar] = useState<boolean>(false);
     const [sidebarHover, setSidebarHover] = useState<boolean>(false);
     const handleClickSidebar = () => {
@@ -18,7 +23,12 @@ export default function Authenticated({
 
     return (
         <div className="flex">
-            <Sidebar hover={sidebarHover} open={sidebar} user={user} />
+            <Sidebar
+                monthData={monthData}
+                hover={sidebarHover}
+                open={sidebar}
+                user={user}
+            />
             <div className="h-screen w-full overflow-y-scroll">
                 <div className="w-full center relative">
                     <div className="center gap-2 absolute left-2 top-2 text-gray-600">

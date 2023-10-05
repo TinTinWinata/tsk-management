@@ -1,11 +1,11 @@
-import { User } from "@/Types";
+import { IUser } from "@/Types/page";
 import { Link } from "@inertiajs/react";
 import { PiDotsSixVerticalBold } from "react-icons/pi";
 import Dropdown from "./Dropdown";
 import Initial from "./Initial";
 
 interface IProfileProps {
-    user: User;
+    user: IUser;
     onClick?: (val: boolean) => void;
     onClickOutside?: (val: boolean) => void;
 }

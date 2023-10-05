@@ -13,6 +13,7 @@ export default {
     theme: {
         extend: {
             colors: {
+                initial: "#E9E9E7",
                 sidebar: "#FBFBFA",
                 hover: "#EFEFEF",
             },

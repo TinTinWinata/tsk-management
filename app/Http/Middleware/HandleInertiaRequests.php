@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Controllers\ScheduleController;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -30,8 +31,11 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $monthDatas = null;
+
         $token = null;
         if (auth()->check()) {
+            $monthDatas = ScheduleController::getAvailableMonths();
             $request->user()->tokens()->delete();
             $token = $request->user()->createToken('TSK_API')->plainTextToken;
         }
@@ -40,6 +44,7 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'monthData' => $monthDatas,
             'token' => $token,
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),

@@ -1,18 +1,19 @@
 import Schedule from "@/Components/Kanban/Schedule";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { User } from "@/Types";
+import { PageProps } from "@/Types/page";
 import { IScheduleData } from "@/Types/schedule-data";
 // import Board from "@asseinfo/react-kanban";
 import { Head } from "@inertiajs/react";
 
-export interface IDashboardProps {
-    auth: { user: User };
-    token: string;
-    data: IScheduleData;
-}
-export default function Dashboard({ auth, data, token }: IDashboardProps) {
+export default function Dashboard({
+    auth,
+    data,
+    token,
+    monthData,
+}: PageProps<{ data: IScheduleData }>) {
     return (
         <AuthenticatedLayout
+            monthData={monthData}
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">

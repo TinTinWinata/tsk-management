@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Console\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
 
@@ -42,6 +44,17 @@ class ScheduleController extends Controller
             $dates[$date]['schedules'] = [];
         }
         return $dates;
+    }
+
+    public static function getAvailableMonths()
+    {
+        $user = Auth::user();
+        $datas = DB::table('schedules as s')
+            ->select(DB::raw('CONCAT(MONTHNAME(s.date), \' - \', YEAR(s.date)) as month'))
+            ->distinct()
+            ->where('user_id', $user->id)
+            ->get();
+        return $datas;
     }
 
     public function save(Request $req)

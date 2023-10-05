@@ -1,20 +1,26 @@
-import { User } from "@/Types";
+import { IMonthData, IUser } from "@/Types/page";
 import { useEffect, useState } from "react";
-import { RxRocket } from "react-icons/rx";
+import { RxCaretRight, RxRocket } from "react-icons/rx";
 import Profile from "./Profile";
 import SidebarMenu from "./SidebarMenu";
 
 interface ISidebarProps {
-    user: User;
+    user: IUser;
     open: boolean;
     hover: boolean;
+    monthData: IMonthData[];
 }
 
-export default function Sidebar({ user, open, hover }: ISidebarProps) {
+export default function Sidebar({
+    user,
+    open,
+    hover,
+    monthData,
+}: ISidebarProps) {
     const [stay, setStay] = useState<boolean>(false);
     const [first, setFirst] = useState<boolean>(true);
 
-    const width = "min-w-[200px]";
+    const width = "min-w-[240px]";
     const timeToClose = 500;
 
     useEffect(() => {
@@ -65,6 +71,22 @@ export default function Sidebar({ user, open, hover }: ISidebarProps) {
                     user={user}
                 />
                 <SidebarMenu icon={<RxRocket />} name="Line" />
+                <div className="mt-5">
+                    <div className="ml-3 mb-1 text-xs font-medium text-gray-500  opacity-75">
+                        Schedule
+                    </div>
+                    {monthData.map((data, index: number) => (
+                        <div className="w-full">
+                            <div
+                                className="pl-1 rounded-md transition-all duration-200 py-[3px] my-[0.25px] cursor-pointer items-center gap-0.5 flex  hover:bg-hover m-1 text-[13px] text-gray-500"
+                                key={index}
+                            >
+                                <RxCaretRight className="w-5 h-5 text-gray-400 " />
+                                <div className="font-medium">{data.month}</div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
         </div>
     );

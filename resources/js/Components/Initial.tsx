@@ -13,7 +13,7 @@ export default function Initial({ initial, size = "lg" }: IInitialProps) {
         <div
             className={`
             ${getSize()}
-        ml-1 text-gray-500  font-bold center bg-gray-300 rounded-md`}
+        ml-1 text-gray-500  font-bold center bg-initial rounded-md`}
         >
             {character}
         </div>
