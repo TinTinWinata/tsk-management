@@ -1,6 +1,6 @@
 import { IMonthData, IUser } from "@/Types/page";
 import { useEffect, useState } from "react";
-import { RxRocket } from "react-icons/rx";
+import { RxHome, RxRocket } from "react-icons/rx";
 import Profile from "../Profile";
 import SidebarMenu from "./SidebarMenu";
 import SidebarMonthMenu from "./SidebarMonthMenu";
@@ -71,7 +71,9 @@ export default function Sidebar({
                     onClickOutside={handleOnProfileClickOutside}
                     user={user}
                 />
+                <div className="h-1"></div>
                 <SidebarMenu icon={<RxRocket />} name="Line" />
+                <SidebarMenu icon={<RxHome />} name="Home" />
                 <div className="mt-5">
                     <div className="ml-3 mb-1 text-xs font-medium text-gray-500  opacity-75">
                         Schedule

@@ -12,7 +12,7 @@ export default function SidebarMenu({
     return (
         <div className="w-full center text-gray-500">
             <div
-                className="m-1 flex items-center w-full rounded-md  px-1 hover:bg-hover cursor-pointer transition-all duration-100"
+                className="mx-1 flex items-center w-full rounded-md  px-1 hover:bg-hover cursor-pointer transition-all duration-100"
                 onClick={() => onClick && onClick()}
             >
                 <div className="center w-8 h-8">{icon}</div>
