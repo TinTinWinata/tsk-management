@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
 Route::get('/', [ScheduleController::class, 'index'])
     ->name('dashboard');
 
-
+Route::get('/schedule', [ScheduleController::class, 'indexMonth'])
+    ->name('schedule');
 
 require __DIR__ . '/auth.php';

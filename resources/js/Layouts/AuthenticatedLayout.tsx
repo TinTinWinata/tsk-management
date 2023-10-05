@@ -1,5 +1,5 @@
 import Icon from "@/Components/Icon";
-import Sidebar from "@/Components/Sidebar";
+import Sidebar from "@/Components/Sidebar/Sidebar";
 import { IMonthData, IUser } from "@/Types/page";
 import { Link } from "@inertiajs/react";
 import { PropsWithChildren, ReactNode, useState } from "react";

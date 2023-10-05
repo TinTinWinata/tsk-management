@@ -38,7 +38,6 @@ export default function Schedule({
             top: window.innerHeight / 2,
             behavior: "smooth", // This adds smooth scrolling animation
         });
-        console.log(window.innerHeight / 2);
     }, []);
 
     const checkEmpty = (datas: IScheduleData) => {

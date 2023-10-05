@@ -9,9 +9,11 @@ export default function Edit({
     auth,
     mustVerifyEmail,
     status,
+    monthData,
 }: PageProps<{ mustVerifyEmail: boolean; status?: string }>) {
     return (
         <AuthenticatedLayout
+            monthData={monthData}
             user={auth.user}
             header={
                 <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">

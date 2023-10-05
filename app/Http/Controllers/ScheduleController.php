@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
+use App\Rules\MonthYearFormat;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Console\Application;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
@@ -45,6 +47,23 @@ class ScheduleController extends Controller
         }
         return $dates;
     }
+
+    public static function getDatesForMonth($inputMonthYear)
+    {
+        $dateFormat = 'F-Y';
+        $dates = [];
+        $date = Carbon::createFromFormat($dateFormat, $inputMonthYear)->startOfMonth();
+
+        while ($date->format($dateFormat) === $inputMonthYear) {
+            $dateStr = $date->format('Y-m-d');
+            $dates[$dateStr]['formatted'] = $date->format('D d - m - Y');
+            $dates[$dateStr]['schedules'] = [];
+            $date->modify('+1 day');
+        }
+
+        return $dates;
+    }
+
 
     public static function getAvailableMonths()
     {
@@ -97,12 +116,19 @@ class ScheduleController extends Controller
         return response()->json('Succesfully saved new schedules', 200);
     }
 
-    public function getUserSchedule()
-    {
-        $dates = ScheduleController::getDates();
 
+    public function getUserSchedule($dates)
+    {
         $user = auth()->user();
-        $schedules = Schedule::where('user_id', $user->id)
+
+        $firstDate = key($dates);
+        end($dates);
+        $lastDate = key($dates);
+
+        $schedules = DB::table('schedules')
+            ->where('user_id', $user->id)
+            ->where('date', '>=', $firstDate)
+            ->where('date', '<=', $lastDate)
             ->orderBy('position', 'asc')->get();
         foreach ($schedules as $schedule) {
             $dateStr = Carbon::parse($schedule->date)->format('Y-m-d');
@@ -111,11 +137,24 @@ class ScheduleController extends Controller
         return $dates;
     }
 
+    public function indexMonth(Request $request)
+    {
+        $request->validate([
+            'date' => [new MonthYearFormat]
+        ]);
+        $month = $request->query->get('date'); // October-2023
+        $dates = ScheduleController::getDatesForMonth($month);
+
+        return Inertia::render('Dashboard/Dashboard', [
+            'data' => $this->getUserSchedule($dates)
+        ]);
+    }
+
     public function index()
     {
         if (auth()->check()) {
             return Inertia::render('Dashboard/Dashboard', [
-                'data' => $this->getUserSchedule()
+                'data' => $this->getUserSchedule(ScheduleController::getDates())
             ]);
         } else {
             return Inertia::render('Auth/Login');

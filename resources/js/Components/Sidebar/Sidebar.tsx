@@ -1,8 +1,9 @@
 import { IMonthData, IUser } from "@/Types/page";
 import { useEffect, useState } from "react";
-import { RxCaretRight, RxRocket } from "react-icons/rx";
-import Profile from "./Profile";
+import { RxRocket } from "react-icons/rx";
+import Profile from "../Profile";
 import SidebarMenu from "./SidebarMenu";
+import SidebarMonthMenu from "./SidebarMonthMenu";
 
 interface ISidebarProps {
     user: IUser;
@@ -76,15 +77,7 @@ export default function Sidebar({
                         Schedule
                     </div>
                     {monthData.map((data, index: number) => (
-                        <div className="w-full">
-                            <div
-                                className="pl-1 rounded-md transition-all duration-200 py-[3px] my-[0.25px] cursor-pointer items-center gap-0.5 flex  hover:bg-hover m-1 text-[13px] text-gray-500"
-                                key={index}
-                            >
-                                <RxCaretRight className="w-5 h-5 text-gray-400 " />
-                                <div className="font-medium">{data.month}</div>
-                            </div>
-                        </div>
+                        <SidebarMonthMenu data={data} key={index} />
                     ))}
                 </div>
             </div>
