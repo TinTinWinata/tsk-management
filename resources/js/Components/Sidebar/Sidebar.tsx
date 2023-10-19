@@ -1,6 +1,9 @@
 import { IMonthData, IUser } from "@/Types/page";
+import { Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
 import { RxHome, RxRocket } from "react-icons/rx";
+import LineTutorial from "../LineTutorial";
+import Modal from "../Modal";
 import Profile from "../Profile";
 import SidebarMenu from "./SidebarMenu";
 import SidebarMonthMenu from "./SidebarMonthMenu";
@@ -20,7 +23,7 @@ export default function Sidebar({
 }: ISidebarProps) {
     const [stay, setStay] = useState<boolean>(false);
     const [first, setFirst] = useState<boolean>(true);
-
+    const [lineModal, setLineModal] = useState<boolean>(false);
     const width = "min-w-[240px]";
     const timeToClose = 500;
 
@@ -54,6 +57,9 @@ export default function Sidebar({
                 open ? width : "w-0 overflow-hidden "
             } duration-300 transition-all min-h-screen bg-sidebar border border-r`}
         >
+            <Modal maxWidth="sm" show={lineModal} onClose={setLineModal}>
+                <LineTutorial user={user} />
+            </Modal>
             <div
                 onMouseEnter={() => setStay(true)}
                 onMouseLeave={handleOnMouseLeave}
@@ -72,16 +78,24 @@ export default function Sidebar({
                     user={user}
                 />
                 <div className="h-1"></div>
-                <SidebarMenu icon={<RxRocket />} name="Line" />
-                <SidebarMenu icon={<RxHome />} name="Home" />
-                <div className="mt-5">
-                    <div className="ml-3 mb-1 text-xs font-medium text-gray-500  opacity-75">
-                        Schedule
+                <SidebarMenu
+                    onClick={() => setLineModal(true)}
+                    icon={<RxRocket />}
+                    name="Line"
+                />
+                <Link href="/">
+                    <SidebarMenu icon={<RxHome />} name="Home" />
+                </Link>
+                {monthData.length > 0 && (
+                    <div className="mt-5">
+                        <div className="ml-3 mb-1 text-xs font-medium text-gray-500  opacity-75">
+                            Schedule
+                        </div>
+                        {monthData.map((data, index: number) => (
+                            <SidebarMonthMenu data={data} key={index} />
+                        ))}
                     </div>
-                    {monthData.map((data, index: number) => (
-                        <SidebarMonthMenu data={data} key={index} />
-                    ))}
-                </div>
+                )}
             </div>
         </div>
     );
