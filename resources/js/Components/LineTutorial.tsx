@@ -1,5 +1,6 @@
 import { IUser } from "@/Types/page";
 import axios from "axios";
+import toast from "react-hot-toast";
 import PrimaryButton from "./PrimaryButton";
 
 interface ILineTutorial {
@@ -14,7 +15,15 @@ export default function LineTutorial({ user }: ILineTutorial) {
             },
         });
         if (response.status === 200) {
+            toast(response.data, {
+                duration: 4000,
+                icon: "🫡",
+            });
         } else {
+            toast(response.data, {
+                duration: 4000,
+                icon: "😢",
+            });
         }
     };
     return (
