@@ -34,18 +34,21 @@ class HandleInertiaRequests extends Middleware
         $monthDatas = null;
 
         $token = null;
+        $user = null;
+
         if (auth()->check()) {
             $monthDatas = ScheduleController::getAvailableMonths();
             $request->user()->tokens()->delete();
             $token = $request->user()->createToken('TSK_API')->plainTextToken;
+            $user = $request->user();
+            $user['token'] = $token;
         }
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
             ],
             'monthData' => $monthDatas,
-            'token' => $token,
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),

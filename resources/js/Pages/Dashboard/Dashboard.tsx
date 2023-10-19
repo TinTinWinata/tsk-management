@@ -8,7 +8,6 @@ import { Head } from "@inertiajs/react";
 export default function Dashboard({
     auth,
     data,
-    token,
     monthData,
 }: PageProps<{ data: IScheduleData }>) {
     return (
@@ -22,7 +21,7 @@ export default function Dashboard({
             }
         >
             <Head title="Dashboard" />
-            <Schedule token={token} datas={data}></Schedule>
+            <Schedule token={auth.user.token} datas={data}></Schedule>
         </AuthenticatedLayout>
     );
 }

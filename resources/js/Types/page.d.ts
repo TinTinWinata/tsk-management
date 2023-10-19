@@ -1,6 +1,7 @@
 export interface IUser {
     id: number;
     name: string;
+    token: string | null;
     email: string;
     email_verified_at: string;
 }
@@ -16,5 +17,4 @@ export type PageProps<
     auth: {
         user: IUser;
     };
-    token: string;
 };
