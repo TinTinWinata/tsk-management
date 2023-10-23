@@ -151,6 +151,20 @@ class ScheduleController extends Controller
         ]);
     }
 
+    public function indexList()
+    {
+
+        $user = Auth::user();
+        $schedules = Schedule::where('user_id', $user->id)
+            ->orderBy('date', 'asc')
+            ->get();
+        if (auth()->check()) {
+            return Inertia::render('List/List', [
+                'data' => $schedules
+            ]);
+        }
+    }
+
     public function index()
     {
         if (auth()->check()) {

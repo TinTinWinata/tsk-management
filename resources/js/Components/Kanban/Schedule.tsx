@@ -135,6 +135,7 @@ export default function Schedule({
 
     const newSchedule = (): ISchedule => {
         return {
+            date: new Date().toString(),
             id: uuidv4(),
             is_done: false,
             position: 0,

@@ -23,10 +23,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/list', [ScheduleController::class, 'indexList'])
+    ->name('list');
+
 Route::get('/', [ScheduleController::class, 'index'])
     ->name('dashboard');
 
 Route::get('/schedule', [ScheduleController::class, 'indexMonth'])
     ->name('schedule');
+
+
 
 require __DIR__ . '/auth.php';

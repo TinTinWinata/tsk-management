@@ -1,7 +1,7 @@
 import { IMonthData, IUser } from "@/Types/page";
 import { Link } from "@inertiajs/react";
 import { useEffect, useState } from "react";
-import { RxHome, RxRocket } from "react-icons/rx";
+import { RxCalendar, RxHome, RxRocket } from "react-icons/rx";
 import LineTutorial from "../LineTutorial";
 import Modal from "../Modal";
 import Profile from "../Profile";
@@ -85,6 +85,9 @@ export default function Sidebar({
                 />
                 <Link href="/">
                     <SidebarMenu icon={<RxHome />} name="Home" />
+                </Link>
+                <Link href="/list">
+                    <SidebarMenu icon={<RxCalendar />} name="Schedule" />
                 </Link>
                 {monthData.length > 0 && (
                     <div className="mt-5">
