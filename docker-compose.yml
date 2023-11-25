@@ -1,0 +1,30 @@
+version : '3'
+
+services:
+  tsk-php:
+    image: tsk-management-php
+    restart: unless-stopped
+    networks:
+      - web
+      - database
+    container_name: tsk-php
+    volumes:
+      - .env:/var/www/html/.env
+  tsk-web:
+    image: tsk-management-nginx
+    #restart: unless-stopped
+    # build:
+    # dockerfile: .docker/nginx/prod.Dockerfile
+    # context: .
+    depends_on:
+      - tsk-php
+    networks:
+      - web
+    container_name: tsk-web
+networks:
+  web:
+    external: true
+    name: web
+  database:
+    external: true
+    name: database

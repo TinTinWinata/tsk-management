@@ -11,4 +11,6 @@ export default defineConfig({
         }),
         react(),
     ],
+
+	base: 'https://tsk.my.id/',
 });
