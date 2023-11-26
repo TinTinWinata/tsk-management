@@ -23,6 +23,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/reminder', [ScheduleController::class, 'reminder']);
+
 Route::get('/list', [ScheduleController::class, 'indexList'])
     ->name('list');
 
