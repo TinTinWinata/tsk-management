@@ -1,6 +1,5 @@
 import { ISchedule } from "@/Types/schedule";
 import { IScheduleData } from "@/Types/schedule-data";
-import { swapItems } from "@/Util/Array";
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import {
@@ -103,7 +102,6 @@ export default function Schedule({
         const sourceDate = e.source.droppableId;
 
         const newData = cloneDatas();
-
         // Validate destination and source is not same
         if (destDate != sourceDate) {
             // Add new data to destination
@@ -123,11 +121,9 @@ export default function Schedule({
             newData[sourceDate].schedules.splice(sourceIndex, 1);
         } else {
             // Just swap the item
-            swapItems<ISchedule>(
-                newData[sourceDate].schedules,
-                sourceIndex,
-                destIndex
-            );
+            const temp: ISchedule = newData[sourceDate].schedules[sourceIndex];
+            newData[sourceDate].schedules.splice(sourceIndex, 1);
+            newData[sourceDate].schedules.splice(destIndex, 0, temp);
         }
 
         saveDatas(newData);

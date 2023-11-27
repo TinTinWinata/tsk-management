@@ -3,7 +3,7 @@ import Sidebar from "@/Components/Sidebar/Sidebar";
 import { IMonthData, IUser } from "@/Types/page";
 import { Link } from "@inertiajs/react";
 import { PropsWithChildren, ReactNode, useState } from "react";
-import { RxHamburgerMenu, RxHome, RxSun } from "react-icons/rx";
+import { RxHamburgerMenu, RxHome } from "react-icons/rx";
 
 export default function Authenticated({
     user,
@@ -54,9 +54,10 @@ export default function Authenticated({
                                 <RxHome className="w-4 h-4" />
                             </Icon>
                         </Link>
-                        <Icon onClick={handleTheme}>
+                        {/* Theme Features */}
+                        {/* <Icon onClick={handleTheme}>
                             <RxSun className="w-4 h-4" />
-                        </Icon>
+                        </Icon> */}
                     </div>
                     <div className="max-w-screen-xl w-full">
                         <main className="w-full p-10 ">{children}</main>
