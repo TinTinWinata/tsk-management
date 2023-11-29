@@ -4,6 +4,9 @@ services:
   tsk-php:
     image: tsk-management-php
     restart: unless-stopped
+      #build:
+      #dockerfile: .docker/nginx/prod.Dockerfile
+      #context: .
     networks:
       - web
       - database
@@ -12,10 +15,10 @@ services:
       - .env:/var/www/html/.env
   tsk-web:
     image: tsk-management-nginx
-    #restart: unless-stopped
-    # build:
-    # dockerfile: .docker/nginx/prod.Dockerfile
-    # context: .
+    restart: unless-stopped
+      #build:
+      #dockerfile: .docker/nginx/prod.Dockerfile
+      #context: .
     depends_on:
       - tsk-php
     networks:
