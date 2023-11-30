@@ -4,15 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Note;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
+use Inertia\Inertia;
 
 class NoteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
-        //
+        if (auth()->check()) {
+            return Inertia::render('Note/Note', [
+                'notes' => Auth::user()->notes
+            ]);
+        } else {
+            return Inertia::render('Auth/Login');
+        }
     }
 
     /**
@@ -28,7 +38,10 @@ class NoteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->all();
+        $data['user_id'] = $request->user()->id;
+        Note::create($data);
+        return Redirect::route('note');
     }
 
     /**

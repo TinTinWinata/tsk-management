@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleController;
 use Illuminate\Foundation\Application;
@@ -20,6 +21,10 @@ use Inertia\Inertia;
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/note', [NoteController::class, 'index'])
+        ->name('note');
+    Route::post('/note', [NoteController::class, 'store'])
+        ->name('note.insert');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
@@ -30,6 +35,7 @@ Route::get('/list', [ScheduleController::class, 'indexList'])
 
 Route::get('/', [ScheduleController::class, 'index'])
     ->name('dashboard');
+
 
 Route::get('/schedule', [ScheduleController::class, 'indexMonth'])
     ->name('schedule');
