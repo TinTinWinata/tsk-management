@@ -2,31 +2,34 @@ import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import PrimaryButton from "@/Components/PrimaryButton";
 import TextInput from "@/Components/TextInput";
+import { INote } from "@/Types/note";
 import { Transition } from "@headlessui/react";
 import { useForm } from "@inertiajs/react";
 import { FormEventHandler } from "react";
 import TextBox from "../TextBox";
-export interface IInsertNoteProps {
-    className?: string;
+
+export interface IUpdateNoteProps {
+    note?: INote;
 }
 
-export default function InsertNote({ className = "" }: IInsertNoteProps) {
-    const { data, setData, post, errors, processing, recentlySuccessful } =
+export default function UpdateNote({ note }: IUpdateNoteProps) {
+    const { data, setData, patch, errors, processing, recentlySuccessful } =
         useForm({
-            title: "",
-            content: "",
+            title: note?.title,
+            content: note?.content,
+            id: note?.id,
         });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route("note.insert"));
+        patch(route("note.update", { data: { id: data.id } }));
     };
 
     return (
         <section className="p-6">
             <header>
                 <h2 className="mt-2 text-lg font-medium text-gray-900 dark:text-gray-100">
-                    Insert Note
+                    Update Note
                 </h2>
 
                 <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
@@ -69,7 +72,7 @@ export default function InsertNote({ className = "" }: IInsertNoteProps) {
                 </div>
 
                 <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={processing}>Insert</PrimaryButton>
+                    <PrimaryButton disabled={processing}>Update</PrimaryButton>
                     <Transition
                         show={recentlySuccessful}
                         enter="transition ease-in-out"

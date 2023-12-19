@@ -1,7 +1,7 @@
 import { ISchedule } from "@/Types/schedule";
 import { IScheduleData } from "@/Types/schedule-data";
 import axios, { AxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     DragDropContext,
     OnDragEndResponder,
@@ -30,14 +30,6 @@ export default function Schedule({
     const cloneDatas = () => {
         return JSON.parse(JSON.stringify(datas)) as IScheduleData;
     };
-
-    useEffect(() => {
-        // Scroll to the center of the page when the component mounts
-        window.scrollTo({
-            top: window.innerHeight / 2,
-            behavior: "smooth", // This adds smooth scrolling animation
-        });
-    }, []);
 
     const checkEmpty = (datas: IScheduleData) => {
         for (const data in datas) {
