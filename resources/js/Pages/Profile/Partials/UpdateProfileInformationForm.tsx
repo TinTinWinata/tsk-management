@@ -25,7 +25,7 @@ export default function UpdateProfileInformation({
         });
 
     const submit: FormEventHandler = (e) => {
-        e.preventDefault();
+        e.preventDefault();nte
 
         patch(route("profile.update"));
     };
