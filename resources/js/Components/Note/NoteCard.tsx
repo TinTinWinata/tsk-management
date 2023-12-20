@@ -1,4 +1,4 @@
-import { INote } from "@/types/note";
+import { INote } from "@/Types/note";
 import { createRef } from "react";
 import toast from "react-hot-toast";
 import { IoCopyOutline } from "react-icons/io5";
