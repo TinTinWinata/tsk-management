@@ -190,7 +190,13 @@ class LineController extends Controller
         } else {
             $replyText = "Hello " . $user->name . " 😊\nThis is your schedules for today:\n\n";
             foreach ($user->schedulesToday as $key => $schedule) {
-                $replyText .= $key + 1 . ") " . $schedule->title . "\n";
+                $done = "";
+                if ($schedule->is_done) {
+                    $done = "V";
+                } else {
+                    $done = "X";
+                }
+                $replyText .= $key + 1 . ") [" . $done . "]" . $schedule->title . "\n";
             }
         }
         return $this->handleSuccessResponse($replyText, $replyToken);
