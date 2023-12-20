@@ -26,7 +26,7 @@ export default function NoteList({ notes, handleSelect }: INoteListProps) {
                 notes.map((note, idx: number) => (
                     <div
                         key={note.id}
-                        className="p-3 border border-gray-800 border-opacity-30"
+                        className="p-3 border border-gray-800 border-opacity-20"
                     >
                         <div className="flex justify-between items-center gap-3">
                             <div className="font-semibold text-lg">
@@ -49,7 +49,9 @@ export default function NoteList({ notes, handleSelect }: INoteListProps) {
                     </div>
                 ))
             ) : (
-                <div>You don't have available notes, Create a new One!</div>
+                <div className="text-gray-600">
+                    You don't have available notes, Create a new One!
+                </div>
             )}
         </div>
     );

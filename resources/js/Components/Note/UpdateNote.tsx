@@ -5,7 +5,8 @@ import TextInput from "@/Components/TextInput";
 import { INote } from "@/Types/note";
 import { Transition } from "@headlessui/react";
 import { useForm } from "@inertiajs/react";
-import { FormEventHandler, useEffect } from "react";
+import { FormEventHandler } from "react";
+import DangerButton from "../DangerButton";
 import TextBox from "../TextBox";
 
 export interface IUpdateNoteProps {
@@ -22,6 +23,7 @@ export default function UpdateNote({ note, onSuceeded }: IUpdateNoteProps) {
         processing,
         recentlySuccessful,
         wasSuccessful,
+        delete: destroy,
     } = useForm({
         title: note?.title,
         content: note?.content,
@@ -30,14 +32,22 @@ export default function UpdateNote({ note, onSuceeded }: IUpdateNoteProps) {
 
     const submit: FormEventHandler = async (e) => {
         e.preventDefault();
-        patch(route("note.update", note?.id));
+        patch(route("note.update", note?.id), {
+            onSuccess: () => onSuceeded && onSuceeded(),
+        });
+    };
+    const handleDelete = () => {
+        destroy(route("note.destroy", note?.id), {
+            onSuccess: () => onSuceeded && onSuceeded(),
+        });
     };
 
-    useEffect(() => {
-        if (recentlySuccessful && onSuceeded) {
-            onSuceeded();
-        }
-    }, [recentlySuccessful]);
+    // destroy(route('profile.destroy'), {
+    //     preserveScroll: true,
+    //     onSuccess: () => closeModal(),
+    //     onError: () => passwordInput.current?.focus(),
+    //     onFinish: () => reset(),
+    // });
 
     return (
         <section className="p-6">
@@ -87,6 +97,13 @@ export default function UpdateNote({ note, onSuceeded }: IUpdateNoteProps) {
 
                 <div className="flex items-center gap-4">
                     <PrimaryButton disabled={processing}>Update</PrimaryButton>
+                    <DangerButton
+                        disabled={processing}
+                        type="button"
+                        onClick={handleDelete}
+                    >
+                        Delete
+                    </DangerButton>
                     <Transition
                         show={recentlySuccessful}
                         enter="transition ease-in-out"
