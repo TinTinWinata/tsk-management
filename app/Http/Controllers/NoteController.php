@@ -65,14 +65,13 @@ class NoteController extends Controller
      */
     public function update(Request $request, Note $note)
     {
-        dd($note->title);
         $request->validate([
             'title' => 'required',
             'content' => 'required',
         ]);
 
-        $note->$request['title'];
-        $note->$request['content'];
+        $note->title = $request['title'];
+        $note->content = $request['content'];
 
         $note->save();
         return Redirect::route('note');

@@ -34,7 +34,7 @@ export default function Note({
         >
             <Head title="Note" />
             <div className="min-h-screen p-20 flex-col">
-                <div className="flex">  
+                <div className="flex">
                     <h1 className="font-bold text-3xl">Notes</h1>
                     <div
                         onClick={() => setModal(true)}
@@ -49,7 +49,10 @@ export default function Note({
                         show={selectedNote !== null}
                         onClose={() => setSelectedNote(null)}
                     >
-                        <UpdateNote note={selectedNote} />
+                        <UpdateNote
+                            onSuceeded={() => setSelectedNote(null)}
+                            note={selectedNote}
+                        />
                     </Modal>
                 </div>
                 <div className="h-4"></div>

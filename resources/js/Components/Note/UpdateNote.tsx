@@ -5,25 +5,39 @@ import TextInput from "@/Components/TextInput";
 import { INote } from "@/Types/note";
 import { Transition } from "@headlessui/react";
 import { useForm } from "@inertiajs/react";
-import { FormEventHandler } from "react";
+import { FormEventHandler, useEffect } from "react";
 import TextBox from "../TextBox";
 
 export interface IUpdateNoteProps {
     note?: INote;
+    onSuceeded?: () => void;
 }
 
-export default function UpdateNote({ note }: IUpdateNoteProps) {
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
-        useForm({
-            title: note?.title,
-            content: note?.content,
-            id: note?.id,
-        });
+export default function UpdateNote({ note, onSuceeded }: IUpdateNoteProps) {
+    const {
+        data,
+        setData,
+        patch,
+        errors,
+        processing,
+        recentlySuccessful,
+        wasSuccessful,
+    } = useForm({
+        title: note?.title,
+        content: note?.content,
+        id: note?.id,
+    });
 
-    const submit: FormEventHandler = (e) => {
+    const submit: FormEventHandler = async (e) => {
         e.preventDefault();
-        patch(route("note.update", { data: { id: data.id } }));
+        patch(route("note.update", note?.id));
     };
+
+    useEffect(() => {
+        if (recentlySuccessful && onSuceeded) {
+            onSuceeded();
+        }
+    }, [recentlySuccessful]);
 
     return (
         <section className="p-6">
