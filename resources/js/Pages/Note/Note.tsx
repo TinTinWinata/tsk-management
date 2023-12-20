@@ -43,7 +43,7 @@ export default function Note({
                         Insert
                     </div>
                     <Modal show={modal} onClose={() => setModal(false)}>
-                        <InsertNote />
+                        <InsertNote onSuceeded={() => setModal(false)} />
                     </Modal>
                     <Modal
                         show={selectedNote !== null}

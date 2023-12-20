@@ -28,7 +28,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/note/{note}', [NoteController::class, 'update'])
         ->name('note.update');
 
-    Route::delete('/note', [NoteController::class, 'destroy'])
+    Route::delete('/note/{note}', [NoteController::class, 'destroy'])
         ->name('note.destroy');
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -8,9 +8,13 @@ import { FormEventHandler } from "react";
 import TextBox from "../TextBox";
 export interface IInsertNoteProps {
     className?: string;
+    onSuceeded?: () => void;
 }
 
-export default function InsertNote({ className = "" }: IInsertNoteProps) {
+export default function InsertNote({
+    className = "",
+    onSuceeded,
+}: IInsertNoteProps) {
     const { data, setData, post, errors, processing, recentlySuccessful } =
         useForm({
             title: "",
@@ -19,7 +23,9 @@ export default function InsertNote({ className = "" }: IInsertNoteProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route("note.insert"));
+        post(route("note.insert"), {
+            onSuccess: () => onSuceeded && onSuceeded(),
+        });
     };
 
     return (

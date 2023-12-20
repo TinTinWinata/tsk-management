@@ -25,49 +25,55 @@ export default function List({
             <Head title="Dashboard" />
             <div className="min-h-screen p-20 flex-col">
                 <h1 className="font-bold text-3xl">Schedule List</h1>
-                <table className="text-sm w-full mt-5">
-                    <tbody>
-                        <tr className="text-gray-400 ">
-                            <HeaderTable
-                                className="border-r"
-                                icon={<IoText />}
-                                name="Title"
-                            />
-                            <HeaderTable
-                                className="border-r"
-                                icon={<IoCalendarSharp />}
-                                name="Date"
-                            />
-                            <HeaderTable
-                                icon={<IoBookmarks />}
-                                name="Is Done"
-                            />
-                        </tr>
-                        {data.map((data: ISchedule, index: number) => (
-                            <tr className="text-gray-800" key={index}>
-                                <td className="font-semibold border-b border-r p-2">
-                                    {data.title}
-                                </td>
-                                <td className="border-b border-r p-2">
-                                    {formatDate(data.date)}
-                                </td>
-
-                                <td className="border-b  p-2 ">
-                                    <div
-                                        className={
-                                            "text-xs  font-semibold bg-opacity-75 w-fit px-2 py-1 rounded-xl " +
-                                            (data.is_done
-                                                ? "bg-green-200"
-                                                : "bg-red-200")
-                                        }
-                                    >
-                                        {data.is_done ? "Done" : "Not Yet"}
-                                    </div>
-                                </td>
+                {data.length > 0 ? (
+                    <table className="text-sm w-full mt-5">
+                        <tbody>
+                            <tr className="text-gray-400 ">
+                                <HeaderTable
+                                    className="border-r"
+                                    icon={<IoText />}
+                                    name="Title"
+                                />
+                                <HeaderTable
+                                    className="border-r"
+                                    icon={<IoCalendarSharp />}
+                                    name="Date"
+                                />
+                                <HeaderTable
+                                    icon={<IoBookmarks />}
+                                    name="Is Done"
+                                />
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                            {data.map((data: ISchedule, index: number) => (
+                                <tr className="text-gray-800" key={index}>
+                                    <td className="font-semibold border-b border-r p-2">
+                                        {data.title}
+                                    </td>
+                                    <td className="border-b border-r p-2">
+                                        {formatDate(data.date)}
+                                    </td>
+
+                                    <td className="border-b  p-2 ">
+                                        <div
+                                            className={
+                                                "text-xs  font-semibold bg-opacity-75 w-fit px-2 py-1 rounded-xl " +
+                                                (data.is_done
+                                                    ? "bg-green-200"
+                                                    : "bg-red-200")
+                                            }
+                                        >
+                                            {data.is_done ? "Done" : "Not Yet"}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <div className="text-gray-600">
+                        You don't have available tasks, Create a new One!
+                    </div>
+                )}
             </div>
         </AuthenticatedLayout>
     );
