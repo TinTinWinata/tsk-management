@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->call(ScheduleController::reminder())->daily();
+        $schedule->call([ScheduleController::class, 'reminder'])->daily();
     }
 
     /**

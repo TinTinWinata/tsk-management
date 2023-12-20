@@ -22,7 +22,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/line-webhook', [LineController::class, 'webhook']);
 
-
+Route::get('/reminder', [ScheduleController::class, 'reminder']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(LineController::class)->group(function () {
         Route::get('/line/test', 'test');

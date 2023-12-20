@@ -188,12 +188,11 @@ class ScheduleController extends Controller
             ->select('users.line_id', 'users.name', 'schedules.date', 'schedules.title')
             ->get();
 
-        $currentDateFormat = now()->format('l, j F Y');
         foreach ($datas as $data) {
             if (array_key_exists($data->line_id, $users)) {
                 $users[$data->line_id] .=  "- " . $data->title . "\n";
             } else {
-                $users[$data->line_id] = "Hi, " . $data->name . "!\n\nThis is Schedule for " . $currentDateFormat . ":\n" . "- " . $data->title . "\n";
+                $users[$data->line_id] = "Hello, " . $data->name . "😊!\n\nThis is Schedule for today agendas!\n" . "- " . $data->title . "\n";
             }
         }
         $url = env('APP_URL');
