@@ -192,11 +192,11 @@ class LineController extends Controller
             foreach ($user->schedulesToday as $key => $schedule) {
                 $done = "";
                 if ($schedule->is_done) {
-                    $done = "V";
+                    $done = "Done";
                 } else {
-                    $done = "X";
+                    $done = "Not Done";
                 }
-                $replyText .= $key + 1 . ") [" . $done . "]" . $schedule->title . "\n";
+                $replyText .= $key + 1 . ") " . $schedule->title . " - " . $done . "\n";
             }
         }
         return $this->handleSuccessResponse($replyText, $replyToken);
