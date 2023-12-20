@@ -25,7 +25,7 @@ Route::middleware('auth')->group(function () {
         ->name('note');
     Route::post('/note', [NoteController::class, 'store'])
         ->name('note.insert');
-    Route::patch('/note', [NoteController::class, 'update'])
+    Route::patch('/note/{note}', [NoteController::class, 'update'])
         ->name('note.update');
 
     Route::delete('/note', [NoteController::class, 'destroy'])
