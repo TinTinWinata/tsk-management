@@ -140,7 +140,7 @@ export default function Schedule({
     return (
         <DragDropContext onDragUpdate={onDragUpdate} onDragEnd={onDragEnd}>
             <div className="center min-h-screen w-full">
-                <div className="w-full grid gap-x-5 gap-y-10 grid-cols-2">
+                <div className="w-full grid gap-x-5 gap-y-10 grid-cols-1 md:grid-cols-2">
                     {Object.keys(datas).map((val, index: number) => {
                         const data = datas[val];
                         return (
