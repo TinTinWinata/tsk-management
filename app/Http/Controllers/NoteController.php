@@ -39,6 +39,7 @@ class NoteController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        $request->validate(['content' => 'required|max:1000', 'title' => 'required|max:255']);
         $data['user_id'] = $request->user()->id;
         Note::create($data);
         return Redirect::route('note');
@@ -67,7 +68,8 @@ class NoteController extends Controller
     {
         $request->validate([
             'title' => 'required',
-            'content' => 'required',
+            'title' => 'required|max:255',
+            'content' => 'required|max:1000',
         ]);
 
         $note->title = $request['title'];

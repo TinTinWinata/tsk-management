@@ -12,14 +12,12 @@ export default function Dashboard({
     monthData,
 }: PageProps<{ data: IScheduleData }>) {
     useEffect(() => {
-        window.addEventListener("mouseover", (e) => {
-            console.log(window.innerHeight);
-        });
-        // Scroll to the center of the page when the component mounts
-        console.log(window.innerHeight / 2);
         window.scrollTo({
-            top: window.innerHeight / 2,
-            behavior: "smooth", // This adds smooth scrolling animation
+            top: Math.max(
+                0,
+                (document.documentElement.scrollHeight - window.innerHeight) / 2
+            ),
+            behavior: "smooth",
         });
     }, []);
 

@@ -1,7 +1,7 @@
 import { ISchedule } from "@/Types/schedule";
 import { IScheduleData } from "@/Types/schedule-data";
 import axios, { AxiosError } from "axios";
-import { useState } from "react";
+import { Ref, useState } from "react";
 import {
     DragDropContext,
     OnDragEndResponder,
@@ -13,6 +13,7 @@ import ScheduleCard from "./ScheduleCard";
 export interface IScheduleProps {
     datas: IScheduleData;
     token: string;
+    currentScheduleRef?: Ref<HTMLDivElement>;
 }
 
 export interface IHoveredData {
@@ -24,6 +25,7 @@ export interface IHoveredData {
 export default function Schedule({
     datas: defaultSchedules,
     token,
+    currentScheduleRef,
 }: IScheduleProps) {
     const [hoveredSchedule, setHoveredSchedule] = useState<IHoveredData>();
     const [datas, setDatas] = useState<IScheduleData>(defaultSchedules);
@@ -144,17 +146,19 @@ export default function Schedule({
                     {Object.keys(datas).map((val, index: number) => {
                         const data = datas[val];
                         return (
-                            <ScheduleCard
-                                onCheck={() => saveDatas()}
-                                hovered={hoveredSchedule}
-                                handleUnFocusText={handleUnFocusText}
-                                handleNewTask={handleNewTask}
-                                date={val}
-                                index={index}
-                                key={index}
-                                formatted={data.formatted}
-                                schedules={data.schedules}
-                            />
+                            <div ref={currentScheduleRef} key={index}>
+                                <ScheduleCard
+                                    onCheck={() => saveDatas()}
+                                    hovered={hoveredSchedule}
+                                    handleUnFocusText={handleUnFocusText}
+                                    handleNewTask={handleNewTask}
+                                    date={val}
+                                    index={index}
+                                    key={index}
+                                    formatted={data.formatted}
+                                    schedules={data.schedules}
+                                />
+                            </div>
                         );
                     })}
                 </div>

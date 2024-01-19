@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('user_id');
 
             $table->string('title');
-            $table->string('content');
+            $table->string('content', 1000);
 
             $table->timestamps();
 
