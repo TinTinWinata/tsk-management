@@ -3,7 +3,7 @@ import Sidebar from "@/Components/Sidebar/Sidebar";
 import { IMonthData, IUser } from "@/Types/page";
 import { Link } from "@inertiajs/react";
 import { PropsWithChildren, ReactNode, useState } from "react";
-import { RxHamburgerMenu, RxHome } from "react-icons/rx";
+import { RxClipboard, RxHamburgerMenu, RxHome } from "react-icons/rx";
 
 export default function Authenticated({
     user,
@@ -42,6 +42,11 @@ export default function Authenticated({
                         <Link href="/">
                             <Icon>
                                 <RxHome className="w-4 h-4" />
+                            </Icon>
+                        </Link>
+                        <Link href="/note">
+                            <Icon>
+                                <RxClipboard className="w-4 h-4" />
                             </Icon>
                         </Link>
                     </div>

@@ -67,7 +67,6 @@ class NoteController extends Controller
     public function update(Request $request, Note $note)
     {
         $request->validate([
-            'title' => 'required',
             'title' => 'required|max:255',
             'content' => 'required|max:1000',
         ]);
