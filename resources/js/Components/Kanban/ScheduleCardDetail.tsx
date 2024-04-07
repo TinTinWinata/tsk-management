@@ -50,7 +50,6 @@ export default function ScheduleCardDetail({
                         className={`  pt-2 gap-1  text-sm pl-1 flex items-center ${
                             snapshot.isDragging && "opacity-30"
                         }`}
-                        ref={provided.innerRef}
                     >
                         <div className="center">
                             <GoMultiSelect

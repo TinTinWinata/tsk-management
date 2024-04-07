@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\LineController;
 use App\Http\Controllers\ScheduleController;
 use Illuminate\Http\Request;
@@ -31,3 +32,5 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/schedule/save', 'save');
     });
 });
+
+Route::post('/login', [AuthController::class, 'login']);
