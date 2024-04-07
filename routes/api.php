@@ -1,7 +1,9 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ApiAuthController;
+use App\Http\Controllers\Api\ApiNoteController;
 use App\Http\Controllers\LineController;
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ScheduleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -31,6 +33,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(ScheduleController::class)->group(function () {
         Route::post('/schedule/save', 'save');
     });
+    Route::controller(ApiNoteController::class)->group(function () {
+        Route::get('/note', 'index');
+    });
 });
 
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [ApiAuthController::class, 'login']);

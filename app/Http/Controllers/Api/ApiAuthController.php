@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller
+class ApiAuthController extends ApiController
 {
     public function login(Request $request)
     {
@@ -14,9 +14,9 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('authToken')->plainTextToken;
-            return response()->json(['message' => 'Logged in successfully', 'token' => $token], 200);
+            return $this->sendResponse($token, 'Logged in successfully');
         } else {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return $this->sendError("Invalid credentials");
         }
     }
 }
