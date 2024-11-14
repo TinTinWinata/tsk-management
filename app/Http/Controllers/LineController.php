@@ -68,29 +68,29 @@ class LineController extends Controller
         return LineController::$api;
     }
 
-    public static function pushMessage($text, $lineId)
+    public static function pushMessage($text, $line_id)
     {
         $api = LineController::getMessagingApi();
         $message = new TextMessage(['type' => 'text', 'text' => $text]);
         $push = new PushMessageRequest([
-            'to' => $lineId,
+            'to' => $line_id,
             'messages' => [$message]
         ]);
         $api->pushMessage($push);
     }
 
-    public function replyMessage($text, $replyToken)
+    public function replyMessage($text, $reply_token)
     {
         $api = LineController::getMessagingApi();
         $message = new TextMessage(['type' => 'text', 'text' => $text]);
         $request = new ReplyMessageRequest([
-            'replyToken' => $replyToken,
+            'replyToken' => $reply_token,
             'messages' => [$message]
         ]);
         $api->replyMessage($request);
     }
 
-    public function login($text, $user, $replyToken, $lineId)
+    public function login($text, $user, $reply_token, $line_id)
     {
         $data = explode(":", $text);
 
@@ -99,17 +99,17 @@ class LineController extends Controller
         if (Auth::attempt(['email' => $email, 'password' => $password])) {
             $user = User::where('email', $email)->first();
 
-            $user->line_id = $lineId;
+            $user->line_id = $line_id;
             $user->save();
 
-            $this->replyMessage("Succesfully integrated to Tsk Management 😊!\n\nWelcome, " . $user->name . "\n\n Try to '/help' to see more information.", $replyToken);
+            $this->replyMessage("Succesfully integrated to Tsk Management 😊!\n\nWelcome, " . $user->name . "\n\n Try to '/help' to see more information.", $reply_token);
             return response()->json('Succesfully response', 200);
         };
         return response()->json('User not found', 400);
     }
 
 
-    public function note($text, $user, $replyToken)
+    public function note($text, $user, $reply_token)
     {
         $replyText = "";
         try {
@@ -122,15 +122,15 @@ class LineController extends Controller
         } catch (Exception $e) {
             $replyText = "Oh no, look's like your note cannot be found! 😢";
         }
-        return $this->handleSuccessResponse($replyText, $replyToken);
+        return $this->handleSuccessResponse($replyText, $reply_token);
     }
 
-    public function myid($text, $user, $replyToken, $lineId)
+    public function myid($text, $user, $reply_token, $line_id)
     {
-        return $this->handleSuccessResponse('This is your line id 😊: ' . $lineId, $replyToken);
+        return $this->handleSuccessResponse('This is your line id 😊: ' . $line_id, $reply_token);
     }
 
-    public function addnote($text, $user, $replyToken)
+    public function addnote($text, $user, $reply_token)
     {
         $data = explode(":", $text);
 
@@ -148,10 +148,10 @@ class LineController extends Controller
         } else {
             $replyText = "Oh no, look's like the note can't be created! 😢";
         }
-        return $this->handleSuccessResponse($replyText, $replyToken);
+        return $this->handleSuccessResponse($replyText, $reply_token);
     }
 
-    public function notes($text, $user, $replyToken)
+    public function notes($text, $user, $reply_token)
     {
         $replyText = "";
         if (count($user->notes) <= 0) {
@@ -163,26 +163,26 @@ class LineController extends Controller
             }
             $replyText .= "\nYou can get the details for the note by : '/note [Note Id]'";
         }
-        return $this->handleSuccessResponse($replyText, $replyToken);
+        return $this->handleSuccessResponse($replyText, $reply_token);
     }
 
-    public function help($text, $lineId, $replyToken)
+    public function help($text, $line_id, $reply_token)
     {
         $replyText = "Welcome to tsk management Web App 😊, to try our features you can:\n\n";
         foreach ($this->commands as $command => $text) {
             $replyText .= "- " . $this->prefix . $command . " " . $text . "\n";
         }
         $replyText .= "\nAnd you can visit our app on " . env('APP_URL');
-        return $this->handleSuccessResponse($replyText, $replyToken);
+        return $this->handleSuccessResponse($replyText, $reply_token);
     }
 
-    public function handleSuccessResponse($replyText, $replyToken)
+    public function handleSuccessResponse($replyText, $reply_token)
     {
-        $this->replyMessage($replyText, $replyToken);
+        $this->replyMessage($replyText, $reply_token);
         return response()->json('Succesfully response', 200);
     }
 
-    public function schedules($text, $user, $replyToken)
+    public function schedules($text, $user, $reply_token)
     {
         $replyText = "";
         if (count($user->schedulesToday) <= 0) {
@@ -199,35 +199,35 @@ class LineController extends Controller
                 $replyText .= $key + 1 . ") " . $schedule->title . " - " . $done . "\n";
             }
         }
-        return $this->handleSuccessResponse($replyText, $replyToken);
+        return $this->handleSuccessResponse($replyText, $reply_token);
     }
 
-    public function mediator($text, $lineId, $replyToken)
+    public function mediator($text, $line_id, $reply_token)
     {
-        $user = User::where('line_id', $lineId)->first();
+        $user = User::where('line_id', $line_id)->first();
         if (!$user) {
-            return $this->handleAuthenticated($replyToken);
+            return $this->handleAuthenticated($reply_token);
         }
         foreach ($this->commands as $command => $commandText) {
             if (Str::startsWith($text, $this->prefix . $command)) {
                 $parts = explode(' ', $text);
                 array_shift($parts);
                 $extractedText = trim(implode(' ', $parts));
-                return $this->{$command}($extractedText, $user, $replyToken, $lineId);
+                return $this->{$command}($extractedText, $user, $reply_token, $line_id);
             }
         }
-        return $this->handleUnknownCommand($replyToken);
+        return $this->handleUnknownCommand($reply_token);
     }
 
-    public function handleAuthenticated($replyToken)
+    public function handleAuthenticated($reply_token)
     {
-        $this->replyMessage("I don't know who you are yet 😯, try to '/login'", $replyToken);
+        $this->replyMessage("I don't know who you are yet 😯, try to '/login'", $reply_token);
         return response()->json('Authenticated', 403);
     }
 
-    public function handleUnknownCommand($replyToken)
+    public function handleUnknownCommand($reply_token)
     {
-        $this->replyMessage("If you're loss, try to '/help' 😊", $replyToken);
+        $this->replyMessage("If you're loss, try to '/help' 😊", $reply_token);
         return response()->json('Unknown Command', 404);
     }
 
@@ -240,15 +240,15 @@ class LineController extends Controller
         $event = $req->events[0];
 
         $text = $event['message']['text'];
-        $replyToken = $event['replyToken'];
-        $userId = $event['source']['userId'];
+        $reply_token = $event['replyToken'];
+        $user_id = $event['source']['userId'];
 
-        if ($text && $replyToken && $userId) {
+        if ($text && $reply_token && $user_id) {
             try {
-                $this->mediator($text, $userId, $replyToken);
+                $this->mediator($text, $user_id, $reply_token);
             } catch (Exception $e) {
                 Log::error($e);
-                return $this->handleSuccessResponse("Oh no 😢, look's like you made a terrible thing!", $replyToken);
+                return $this->handleSuccessResponse("Oh no 😢, look's like you made a terrible thing!", $reply_token);
             }
         } else {
             return response()->json('Error validating data', 404);

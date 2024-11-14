@@ -22,43 +22,43 @@ class ScheduleController extends Controller
      */
     public static function getDates()
     {
-        $beforeDate = 7;
-        $afterDate = 7;
-        $currentDate = Carbon::now();
+        $before_date = 7;
+        $after_date = 7;
+        $current_date = Carbon::now();
         $dates = [];
 
         // Get Before Dates
-        for ($i = $beforeDate - 1; $i >= 0; $i--) {
-            $copyDate = null;
-            $copyDate = $currentDate->copy()->subDay($i);
-            $date = $copyDate->format('Y-m-d');
-            $formattedDate = $copyDate->format('D d - m - Y');
-            $dates[$date]['formatted'] = $formattedDate;
+        for ($i = $before_date - 1; $i >= 0; $i--) {
+            $copy_date = null;
+            $copy_date = $current_date->copy()->subDay($i);
+            $date = $copy_date->format('Y-m-d');
+            $formatted_date = $copy_date->format('D d - m - Y');
+            $dates[$date]['formatted'] = $formatted_date;
             $dates[$date]['schedules'] = [];
         }
 
         // Get After Dates
-        for ($i = 1; $i <= $afterDate; $i++) {
-            $copyDate = null;
-            $copyDate = $currentDate->copy()->addDay($i);
-            $date = $copyDate->format('Y-m-d');
-            $formattedDate = $copyDate->format('D d - m - Y');
-            $dates[$date]['formatted'] = $formattedDate;
+        for ($i = 1; $i <= $after_date; $i++) {
+            $copy_date = null;
+            $copy_date = $current_date->copy()->addDay($i);
+            $date = $copy_date->format('Y-m-d');
+            $formatted_date = $copy_date->format('D d - m - Y');
+            $dates[$date]['formatted'] = $formatted_date;
             $dates[$date]['schedules'] = [];
         }
         return $dates;
     }
 
-    public static function getDatesForMonth($inputMonthYear)
+    public static function getDatesForMonth($input_month_year)
     {
-        $dateFormat = 'F-Y';
+        $date_format = 'F-Y';
         $dates = [];
-        $date = Carbon::createFromFormat($dateFormat, $inputMonthYear)->startOfMonth();
+        $date = Carbon::createFromFormat($date_format, $input_month_year)->startOfMonth();
 
-        while ($date->format($dateFormat) === $inputMonthYear) {
-            $dateStr = $date->format('Y-m-d');
-            $dates[$dateStr]['formatted'] = $date->format('D d - m - Y');
-            $dates[$dateStr]['schedules'] = [];
+        while ($date->format($date_format) === $input_month_year) {
+            $date_str = $date->format('Y-m-d');
+            $dates[$date_str]['formatted'] = $date->format('D d - m - Y');
+            $dates[$date_str]['schedules'] = [];
             $date->modify('+1 day');
         }
 
@@ -77,63 +77,22 @@ class ScheduleController extends Controller
         return $datas;
     }
 
-    public function save(Request $req)
-    {
-        $user = $req->user();
-        $data = $req->all();
-        $schedules = [];
-        $i = 0;
-
-        $startDate = null;
-        $endDate = null;
-
-        foreach ($data as $date => $detail) {
-            if ($i === 0) {
-                $startDate =  $date;
-            }
-            if ($i === count($data) - 1) {
-                $endDate = $date;
-            }
-            foreach ($detail['schedules'] as $key => $schedule) {
-                $schedule['id'] = Str::uuid();
-                unset($schedule['created_at']);
-                unset($schedule['updated_at']);
-                $schedule['date'] = $date;
-                $schedule['user_id'] = $user->id;
-                $schedule['position'] = $key;
-                array_push($schedules, $schedule);
-            }
-            $i++;
-        }
-
-        Schedule::where('user_id', $user->id)
-            ->whereBetween(
-                'date',
-                [$startDate, $endDate]
-            )
-            ->delete();
-
-        Schedule::insert($schedules);
-        return response()->json('Succesfully saved new schedules', 200);
-    }
-
-
     public function getUserSchedule($dates)
     {
         $user = auth()->user();
 
-        $firstDate = key($dates);
+        $first_date = key($dates);
         end($dates);
-        $lastDate = key($dates);
+        $last_date = key($dates);
 
         $schedules = DB::table('schedules')
             ->where('user_id', $user->id)
-            ->where('date', '>=', $firstDate)
-            ->where('date', '<=', $lastDate)
+            ->where('date', '>=', $first_date)
+            ->where('date', '<=', $last_date)
             ->orderBy('position', 'asc')->get();
         foreach ($schedules as $schedule) {
-            $dateStr = Carbon::parse($schedule->date)->format('Y-m-d');
-            array_push($dates[$dateStr]['schedules'], $schedule);
+            $date_str = Carbon::parse($schedule->date)->format('Y-m-d');
+            array_push($dates[$date_str]['schedules'], $schedule);
         }
         return $dates;
     }
@@ -153,7 +112,6 @@ class ScheduleController extends Controller
 
     public function indexList()
     {
-
         $user = Auth::user();
         $schedules = Schedule::where('user_id', $user->id)
             ->orderBy('date', 'asc')
@@ -179,12 +137,12 @@ class ScheduleController extends Controller
     public  static function reminder()
     {
         $users = [];
-        $currentDate = now()->toDateString();
+        $current_date = now()->todate_string();
 
         $datas = DB::table('users')
             ->join('schedules', 'schedules.user_id', '=', 'users.id')
             ->whereNotNull('users.line_id')
-            ->whereDate('date', $currentDate)
+            ->whereDate('date', $current_date)
             ->select('users.line_id', 'users.name', 'schedules.date', 'schedules.title')
             ->get();
 
@@ -196,9 +154,9 @@ class ScheduleController extends Controller
             }
         }
         $url = env('APP_URL');
-        foreach ($users as $lineId => $text) {
+        foreach ($users as $line_id => $text) {
             $text .= "\n You can access the website on " . $url . "!";
-            LineController::pushMessage($text, $lineId);
+            LineController::pushMessage($text, $line_id);
         }
     }
 

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Api\ApiAuthController;
 use App\Http\Controllers\Api\ApiNoteController;
+use App\Http\Controllers\Api\ApiScheduleController;
+use App\Http\Controllers\Api\ApiSpaceController;
 use App\Http\Controllers\LineController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ScheduleController;
@@ -30,11 +32,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(LineController::class)->group(function () {
         Route::get('/line/test', 'test');
     });
-    Route::controller(ScheduleController::class)->group(function () {
+    Route::controller(ApiScheduleController::class)->group(function () {
         Route::post('/schedule/save', 'save');
+    });
+    Route::controller(ApiAuthController::class)->group(function () {
+        Route::get('/me', 'me');
+    });
+    Route::controller(ApiSpaceController::class)->group(function () {
+        Route::get('/space', 'index');
+        Route::post('/space', 'store');
+        Route::patch('/space/{space}', 'update');
+        Route::delete('/space/{space}', 'delete');
     });
     Route::controller(ApiNoteController::class)->group(function () {
         Route::get('/note', 'index');
+        Route::post('/note', 'store');
+        Route::patch('/note/{note}', 'update');
+        Route::delete('/note/{note}', 'delete');
     });
 });
 

@@ -19,6 +19,14 @@ class User extends Authenticatable
     protected $keyType = 'string';
     public $incrementing = false;
 
+    public function spaces(){
+        return $this->belongsToMany(Space::class);
+    }
+
+    public function notifications(){
+        return $this->hasMany(Notification::class);
+    }
+
     public function schedules()
     {
         return $this->hasMany(Schedule::class);

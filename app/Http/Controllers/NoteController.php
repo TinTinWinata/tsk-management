@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\NoteRequest;
 use App\Models\Note;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,10 +37,9 @@ class NoteController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(NoteRequest $request)
     {
-        $data = $request->all();
-        $request->validate(['content' => 'required|max:1000', 'title' => 'required|max:255']);
+        $data = $request->validated();
         $data['user_id'] = $request->user()->id;
         Note::create($data);
         return Redirect::route('note');
