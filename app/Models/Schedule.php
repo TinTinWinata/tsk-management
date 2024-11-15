@@ -21,9 +21,9 @@ class Schedule extends Model
         'date'
     ];
 
-    public function user()
+    public function scheduleable()
     {
-        return $this->belongsTo(User::class);
+        return $this->morphTo();
     }
 
     protected $casts = [];

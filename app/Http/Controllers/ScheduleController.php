@@ -72,7 +72,7 @@ class ScheduleController extends Controller
         $datas = DB::table('schedules as s')
             ->select(DB::raw('CONCAT(MONTHNAME(s.date), \' - \', YEAR(s.date)) as month'))
             ->distinct()
-            ->where('user_id', $user->id)
+            ->where('scheduleable_id', $user->id)
             ->get();
         return $datas;
     }
@@ -86,7 +86,7 @@ class ScheduleController extends Controller
         $last_date = key($dates);
 
         $schedules = DB::table('schedules')
-            ->where('user_id', $user->id)
+            ->where('scheduleable_id', $user->id)
             ->where('date', '>=', $first_date)
             ->where('date', '<=', $last_date)
             ->orderBy('position', 'asc')->get();
@@ -112,10 +112,8 @@ class ScheduleController extends Controller
 
     public function indexList()
     {
-        $user = Auth::user();
-        $schedules = Schedule::where('user_id', $user->id)
-            ->orderBy('date', 'asc')
-            ->get();
+        $user = User::find(Auth::user()->id);
+        $schedules = $user->scheduels()->orderBy('date', 'asc')->get();
         if (auth()->check()) {
             return Inertia::render('List/List', [
                 'data' => $schedules
@@ -140,7 +138,7 @@ class ScheduleController extends Controller
         $current_date = now()->todate_string();
 
         $datas = DB::table('users')
-            ->join('schedules', 'schedules.user_id', '=', 'users.id')
+            ->join('schedules', 'schedules.scheduleable_id', '=', 'users.id')
             ->whereNotNull('users.line_id')
             ->whereDate('date', $current_date)
             ->select('users.line_id', 'users.name', 'schedules.date', 'schedules.title')

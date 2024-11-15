@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Schedule;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ApiScheduleController extends ApiController
@@ -15,37 +16,32 @@ class ApiScheduleController extends ApiController
         $schedules = [];
         $i = 0;
 
-        $startDate = null;
-        $endDate = null;
+        $start_date = null;
+        $end_date = null;
 
         foreach ($data as $date => $detail) {
             if ($i === 0) {
-                $startDate =  $date;
+                $start_date =  $date;
             }
             if ($i === count($data) - 1) {
-                $endDate = $date;
+                $end_date = $date;
             }
             foreach ($detail['schedules'] as $key => $schedule) {
-                $schedule['id'] = Str::uuid();
-                unset($schedule['created_at']);
-                unset($schedule['updated_at']);
-                $schedule['date'] = $date;
-                $schedule['user_id'] = $user->id;
-                $schedule['position'] = $key;
-                array_push($schedules, $schedule);
+                $new_schedule = new Schedule();
+                $new_schedule->fill($schedule);
+                $new_schedule->id = Str::uuid();
+                $new_schedule->date = $date;
+                $new_schedule->position = $key;
+                array_push($schedules, $new_schedule);
             }
             $i++;
         }
 
-        Schedule::where('user_id', $user->id)
-            ->whereBetween(
-                'date',
-                [$startDate, $endDate]
-            )
+        $user->schedules()
+            ->whereBetween('date', [$start_date, $end_date])
             ->delete();
-
-        Schedule::insert($schedules);
-        return response()->json('Succesfully saved new schedules', 200);
+        $user->schedules()->saveMany($schedules);
+        return $this->sendResponse(null, "Succesfully saved schedules");
     }
 
 }

@@ -19,6 +19,10 @@ class Space extends Model
         'owner_id'
     ];
 
+    public function schedules() {
+        return $this->morphMany(Schedule::class, 'scheduleable');
+    }
+
     public function users(){
         return $this->belongsToMany(User::class);
     }

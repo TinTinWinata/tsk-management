@@ -29,7 +29,7 @@ class User extends Authenticatable
 
     public function schedules()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->morphMany(Schedule::class, 'scheduleable');
     }
 
     public function schedulesToday()

@@ -14,12 +14,13 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->uuid('id')->primary()->default(Str::uuid());
-            $table->uuid('user_id');
-            $table->foreign('user_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->dateTime('date');
             $table->string('title');
             $table->integer('position')->nullable();
             $table->boolean('is_done');
+            $table->uuid('scheduleable_id');
+            $table->string('scheduleable_type');
+            $table->index(['scheduleable_id', 'scheduleable_type']);
             $table->timestamps();
         });
     }
