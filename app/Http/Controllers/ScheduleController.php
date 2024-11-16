@@ -77,16 +77,18 @@ class ScheduleController extends Controller
         return $datas;
     }
 
-    public function getUserSchedule($dates)
+    public static function getSchedules($dates, $schedulable_id = null)
     {
-        $user = auth()->user();
+        if($schedulable_id == null) {
+            $schedulable_id = Auth::user()->id;
+        }
 
         $first_date = key($dates);
         end($dates);
         $last_date = key($dates);
 
         $schedules = DB::table('schedules')
-            ->where('scheduleable_id', $user->id)
+            ->where('scheduleable_id', $schedulable_id)
             ->where('date', '>=', $first_date)
             ->where('date', '<=', $last_date)
             ->orderBy('position', 'asc')->get();
@@ -106,7 +108,7 @@ class ScheduleController extends Controller
         $dates = ScheduleController::getDatesForMonth($month);
 
         return Inertia::render('Dashboard/Dashboard', [
-            'data' => $this->getUserSchedule($dates)
+            'data' => ScheduleController::getSchedules($dates)
         ]);
     }
 
@@ -125,7 +127,7 @@ class ScheduleController extends Controller
     {
         if (auth()->check()) {
             return Inertia::render('Dashboard/Dashboard', [
-                'data' => $this->getUserSchedule(ScheduleController::getDates())
+                'data' => ScheduleController::getSchedules(ScheduleController::getDates())
             ]);
         } else {
             return Inertia::render('Auth/Login');

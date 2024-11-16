@@ -41,6 +41,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(ApiSpaceController::class)->group(function () {
         Route::get('/space', 'index');
         Route::post('/space', 'store');
+        Route::get('/space/schedule/{space}', 'schedules');
         Route::patch('/space/{space}', 'update');
         Route::delete('/space/{space}', 'delete');
     });

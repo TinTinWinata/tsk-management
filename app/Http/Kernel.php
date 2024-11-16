@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\ApiErrorHandler;
+use App\Http\Middleware\TransactionMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -45,7 +46,8 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            ApiErrorHandler::class
+            ApiErrorHandler::class,
+            TransactionMiddleware::class
         ],
     ];
 
