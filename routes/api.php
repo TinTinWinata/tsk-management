@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\Api\ApiAuthController;
 use App\Http\Controllers\Api\ApiNoteController;
+use App\Http\Controllers\Api\ApiNotificationController;
 use App\Http\Controllers\Api\ApiScheduleController;
 use App\Http\Controllers\Api\ApiSpaceController;
 use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\LineController;
-use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ScheduleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -43,6 +43,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::controller(ApiAuthController::class)->group(function () {
         Route::get('/me', 'me');
+    });
+    Route::controller(ApiNotificationController::class)->group(function () {
+        Route::post('/approve', 'approve');
+        Route::post('/reject', 'reject');
+        Route::get('/notification', 'index');
     });
     Route::controller(ApiSpaceController::class)->group(function () {
         Route::get('/space', 'index');

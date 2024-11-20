@@ -12,8 +12,10 @@ class ApiSpaceController extends ApiController
 {
     public function index()
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
-        return $this->sendResponse($user->spaces, "Succesfully send spaces");
+        $spaces = $user->spaces()->with('users')->get();
+        return $this->sendResponse($spaces, "Succesfully send spaces");
     }
     public function delete(Space $space)
     {
@@ -23,6 +25,14 @@ class ApiSpaceController extends ApiController
     public function update(ApiSpaceRequest $request, Space $space)
     {
         $data = $request->validated();
+        if($request->has('user_ids') && is_array($request->user_ids)){
+            foreach($request->user_ids as $user_id) {
+                if($user_id == Auth::user()->id || $space->users()->where('user_id', $user_id)->exists()) {
+                    continue;
+                }
+                NotificationController::createSpaceInvitationNotification($space->name, $user_id, Auth::user()->id);
+            }
+        }
         $space->update($data);
         return $this->sendResponse($space, "Succesfully update spaces");
     }

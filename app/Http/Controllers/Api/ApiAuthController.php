@@ -55,7 +55,7 @@ class ApiAuthController extends ApiController
     public function me(Request $request)
     {
         $userId = $request->user()->id;
-        $user = User::find($userId)->with('notifications')->with('spaces')->get();
+        $user = User::where('id', $userId)->first();
         return $this->sendResponse($user, "Succesfully send users");
     }
 }

@@ -8,11 +8,15 @@ use Illuminate\Support\Facades\Auth;
 
 class ApiNotificationController extends ApiController
 {
+    public function index() {
+        $user = Auth::user();
+        return $this->sendResponse($user->notifications, "Succesfully send notifications");
+    }
     public function reject(Notification $notification)
     {
         $notification->delete();
         if($notification->type == "space_invitation" && isset($notification->sender_id)){
-            
+
         }
         return $this->sendResponse(null, "Succesfully rejected notification");
     }
