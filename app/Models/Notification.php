@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Notification extends Model
 {
 
+    protected $primaryKey = 'id';
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     public function users(){
         return $this->belongsTo(User::class);
     }

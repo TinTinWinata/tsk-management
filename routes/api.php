@@ -45,8 +45,8 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', 'me');
     });
     Route::controller(ApiNotificationController::class)->group(function () {
-        Route::post('/approve', 'approve');
-        Route::post('/reject', 'reject');
+        Route::post('/approve/{notification}', 'approve');
+        Route::post('/reject/{notification}', 'reject');
         Route::get('/notification', 'index');
     });
     Route::controller(ApiSpaceController::class)->group(function () {

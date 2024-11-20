@@ -7,6 +7,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Requests\Api\ApiSpaceRequest;
 use App\Models\Space;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ApiSpaceController extends ApiController
 {
@@ -24,13 +25,18 @@ class ApiSpaceController extends ApiController
     }
     public function update(ApiSpaceRequest $request, Space $space)
     {
+        $user = Auth::user();
         $data = $request->validated();
+        $currentSpaceUserIds = array_flip($space->users()->select('users.id')->get()->pluck('id')->toArray());
+        Log::debug('Current Space User Ids : ', [$currentSpaceUserIds]);
         if($request->has('user_ids') && is_array($request->user_ids)){
             foreach($request->user_ids as $user_id) {
-                if($user_id == Auth::user()->id || $space->users()->where('user_id', $user_id)->exists()) {
+                Log::debug('Traverse : ', [$user_id]);
+                if($user_id == $user->id || isset($currentSpaceUserIds[$user_id])) {
                     continue;
                 }
-                NotificationController::createSpaceInvitationNotification($space->name, $user_id, Auth::user()->id);
+                Log::debug('Create Notification : ', [$user_id]);
+                NotificationController::createSpaceInvitationNotification($space, $user_id, $user->id);
             }
         }
         $space->update($data);
@@ -51,7 +57,7 @@ class ApiSpaceController extends ApiController
                 if($user_id == $user->id) {
                     continue;
                 }
-                NotificationController::createSpaceInvitationNotification($space->name, $user_id, $user->id);
+                NotificationController::createSpaceInvitationNotification($space, $user_id, $user->id);
             }
         }
         return $this->sendResponse($space, "Succesfully create spaces");
