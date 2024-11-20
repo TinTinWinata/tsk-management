@@ -15,7 +15,17 @@ class ApiSpaceController extends ApiController
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $spaces = $user->spaces()->with('users')->get();
+        $spaces = $user->spaces()->with([
+            'users' => function ($query) use ($user) {
+                $query->where('users.id', '!=', $user->id);
+            }
+        ])->get();
+
+        $spaces->each(function ($space) {
+            $space->user_ids = $space->users->pluck('id');
+            unset($space->users);
+        });
+
         return $this->sendResponse($spaces, "Succesfully send spaces");
     }
     public function delete(Space $space)
@@ -28,15 +38,12 @@ class ApiSpaceController extends ApiController
         $user = Auth::user();
         $data = $request->validated();
         $currentSpaceUserIds = array_flip($space->users()->select('users.id')->get()->pluck('id')->toArray());
-        Log::debug('Current Space User Ids : ', [$currentSpaceUserIds]);
         if($request->has('user_ids') && is_array($request->user_ids)){
             foreach($request->user_ids as $user_id) {
-                Log::debug('Traverse : ', [$user_id]);
-                if($user_id == $user->id || isset($currentSpaceUserIds[$user_id])) {
+                if($user_id == null || $user_id == $user->id || isset($currentSpaceUserIds[$user_id])) {
                     continue;
                 }
-                Log::debug('Create Notification : ', [$user_id]);
-                NotificationController::createSpaceInvitationNotification($space, $user_id, $user->id);
+                NotificationController::createSpaceInvitationNotification($space, $user_id);
             }
         }
         $space->update($data);
@@ -57,7 +64,7 @@ class ApiSpaceController extends ApiController
                 if($user_id == $user->id) {
                     continue;
                 }
-                NotificationController::createSpaceInvitationNotification($space, $user_id, $user->id);
+                NotificationController::createSpaceInvitationNotification($space, $user_id);
             }
         }
         return $this->sendResponse($space, "Succesfully create spaces");

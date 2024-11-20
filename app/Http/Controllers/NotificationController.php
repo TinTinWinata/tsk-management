@@ -15,7 +15,7 @@ class NotificationController extends Controller
         $notification->user_id = $user_id;
         $notification->save();
     }
-    public static function createSpaceInvitationNotification(Space $space, $user_id, $sender_id)
+    public static function createSpaceInvitationNotification(Space $space, $user_id)
     {
         $notification = new Notification();
         $notification->title = "You have been invited to join the space " . $space->name;
