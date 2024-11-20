@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\ScheduleController;
 use App\Models\Schedule;
 use App\Models\Space;
 use Illuminate\Http\Request;
@@ -10,6 +11,10 @@ use Illuminate\Support\Str;
 
 class ApiScheduleController extends ApiController
 {
+    public function index() {
+        $schedules = ScheduleController::getSchedules(ScheduleController::getDates());
+        return $this->sendResponse($schedules, "Succesfully get schedules data");
+    }
     public function save(Request $req) {
         $model = $req->user();
         if($req->has('space_id')) {
@@ -47,7 +52,7 @@ class ApiScheduleController extends ApiController
             ->whereBetween('date', [$start_date, $end_date])
             ->delete();
         $model->schedules()->saveMany($schedules);
-        return $this->sendResponse(null, "Succesfully saved schedules");
+        return $this->sendResponse(count($schedules), "Succesfully saved schedules");
     }
 
 }

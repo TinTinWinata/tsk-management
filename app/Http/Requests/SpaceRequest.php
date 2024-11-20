@@ -21,6 +21,6 @@ class SpaceRequest extends FormRequest
      */
     public function rules(): array
     {
-        return ['description' => 'required|max:1000', 'name' => 'required|max:255'];
+        return ['description' => 'required|max:1000|min:6', 'name' => 'required|max:255|min:2'];
     }
 }

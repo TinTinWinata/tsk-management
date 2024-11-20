@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\NoteRequest;
+use App\Http\Requests\Api\ApiNoteRequest;
 use App\Models\Note;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ApiNoteController extends ApiController
@@ -15,7 +13,7 @@ class ApiNoteController extends ApiController
         $user = Auth::user();
         return $this->sendResponse($user->notes, "Succesfully send notes");
     }
-    public function update(NoteRequest $request, Note $note)
+    public function update(ApiNoteRequest $request, Note $note)
     {
         $data = $request->validated();
         $note->update($data);
@@ -26,7 +24,7 @@ class ApiNoteController extends ApiController
         $note->delete();
         return $this->sendResponse($note, "Succesfully delete notes");
     }
-    public function store(NoteRequest $request){
+    public function store(ApiNoteRequest $request){
         $user = Auth::user();
         $data = $request->validated();
         $data['user_id'] = $user->id;

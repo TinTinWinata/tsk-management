@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\ApiAuthController;
 use App\Http\Controllers\Api\ApiNoteController;
 use App\Http\Controllers\Api\ApiScheduleController;
 use App\Http\Controllers\Api\ApiSpaceController;
+use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\LineController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ScheduleController;
@@ -26,14 +27,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/line-webhook', [LineController::class, 'webhook']);
-
 Route::get('/reminder', [ScheduleController::class, 'reminder']);
+Route::controller(ApiAuthController::class)->group(function () {
+    Route::post('/login', 'login');
+    Route::post('/register', 'register');
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(LineController::class)->group(function () {
         Route::get('/line/test', 'test');
     });
     Route::controller(ApiScheduleController::class)->group(function () {
         Route::post('/schedule/save', 'save');
+        Route::get('/schedule', 'index');
     });
     Route::controller(ApiAuthController::class)->group(function () {
         Route::get('/me', 'me');
@@ -45,6 +51,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/space/{space}', 'update');
         Route::delete('/space/{space}', 'delete');
     });
+    Route::controller(ApiUserController::class)->group(function () {
+        Route::get('/user', 'index');
+    });
     Route::controller(ApiNoteController::class)->group(function () {
         Route::get('/note', 'index');
         Route::post('/note', 'store');
@@ -53,4 +62,3 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 });
 
-Route::post('/login', [ApiAuthController::class, 'login']);

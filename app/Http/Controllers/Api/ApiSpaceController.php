@@ -4,14 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ScheduleController;
-use App\Http\Requests\NoteRequest;
-use App\Http\Requests\SpaceRequest;
-use App\Models\Note;
+use App\Http\Requests\Api\ApiSpaceRequest;
 use App\Models\Space;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class ApiSpaceController extends ApiController
 {
@@ -25,7 +20,7 @@ class ApiSpaceController extends ApiController
         $space->delete();
         return $this->sendResponse(null, "Succesfully delete spaces");
     }
-    public function update(SpaceRequest $request, Space $space)
+    public function update(ApiSpaceRequest $request, Space $space)
     {
         $data = $request->validated();
         $space->update($data);
@@ -35,7 +30,7 @@ class ApiSpaceController extends ApiController
         $schedules = ScheduleController::getSchedules(ScheduleController::getDates(), $space->id);
         return $this->sendResponse($schedules, "Succesfully get schedules data");
     }
-    public function store(SpaceRequest $request){
+    public function store(ApiSpaceRequest $request){
         $user = Auth::user();
         $data = $request->validated();
         $data['owner_id'] = $user->id;
