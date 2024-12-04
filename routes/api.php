@@ -58,6 +58,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::controller(ApiUserController::class)->group(function () {
         Route::get('/user', 'index');
+        Route::post('/user/update-profile', 'updateProfile');
+        Route::post('/user/update-password', 'updatePassword');
     });
     Route::controller(ApiNoteController::class)->group(function () {
         Route::get('/note', 'index');

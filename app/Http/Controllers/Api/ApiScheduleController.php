@@ -51,6 +51,7 @@ class ApiScheduleController extends ApiController
         $model->schedules()
             ->whereBetween('date', [$start_date, $end_date])
             ->delete();
+
         $model->schedules()->saveMany($schedules);
         return $this->sendResponse(count($schedules), "Succesfully saved schedules");
     }

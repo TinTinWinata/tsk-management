@@ -19,6 +19,10 @@ class User extends Authenticatable
     protected $keyType = 'string';
     public $incrementing = false;
 
+    public function assignedSchedules() {
+        return $this->hasMany(Schedule::class, 'assignee_id');
+    }
+
     public function spaces(){
         return $this->belongsToMany(Space::class);
     }

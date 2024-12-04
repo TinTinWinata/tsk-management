@@ -21,6 +21,10 @@ class Schedule extends Model
         'date'
     ];
 
+    public function assignee() {
+        return $this->belongsTo(User::class, 'assignee_id');
+    }
+
     public function scheduleable()
     {
         return $this->morphTo();

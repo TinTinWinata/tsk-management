@@ -16,6 +16,7 @@ return new class extends Migration
             $table->uuid('id')->primary()->default(Str::uuid());
             $table->dateTime('date');
             $table->string('title');
+            $table->uuid('assignee_id')->nullable();
             $table->integer('position')->nullable();
             $table->boolean('is_done');
             $table->uuid('scheduleable_id');
