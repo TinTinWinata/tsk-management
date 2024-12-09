@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class ApiUserController extends ApiController
 {
@@ -16,7 +17,17 @@ class ApiUserController extends ApiController
         $user = Auth::user();
         $data = $request->validated();
         $user->update($data);
-        return $this->sendResponse($user, "Succesfully update user");
+        return $this->sendResponse($this->getCurrentUser(), "Succesfully update user");
+    }
+
+    public function updateIsSyncGoogle(Request $request) {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        Log::debug('Request : ', $request->all());
+        $user->update([
+            'is_sync_google' => $request->get('is_sync_google')
+        ]);
+        return $this->sendResponse($this->getCurrentUser(), "Succesfully update is sync google");
     }
 
     public function updatePassword(ApiUpdatePasswordRequest $request) {
@@ -29,13 +40,18 @@ class ApiUserController extends ApiController
         $user->update([
             'password' => bcrypt($data['new_password'])
         ]);
-        return $this->sendResponse($user, "Succesfully update password");
+        return $this->sendResponse($this->getCurrentUser(), "Succesfully update password");
+    }
+
+    public function getCurrentUser() {
+        $user = User::where('id', Auth::user()->id)->select('id', 'name', 'email', 'photo_profile', 'is_sync_google')->first();
+        return $user;
     }
 
     public function index()
     {
         $userId = Auth::user()->id;
-        $users = User::where('id', '!=', $userId)->select('id', 'name', 'email')->get();
+        $users = User::where('id', '!=', $userId)->select('id','is_sync_google', 'name', 'email', 'photo_profile')->get();
         return $this->sendResponse($users, "Succesfully send user");
     }
 }

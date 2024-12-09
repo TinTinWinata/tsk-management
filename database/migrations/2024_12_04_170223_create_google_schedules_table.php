@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('title');
             $table->uuid('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->string('google_event_id');
+            $table->uuid('schedule_id')->nullable();
             $table->timestamps();
         });
     }

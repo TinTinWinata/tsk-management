@@ -18,7 +18,8 @@ class Schedule extends Model
         'is_done',
         'position',
         'user_id',
-        'date'
+        'date',
+        'assignee_id'
     ];
 
     public function assignee() {

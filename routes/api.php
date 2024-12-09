@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\ApiAuthController;
+use App\Http\Controllers\Api\ApiGoogleScheduleController;
 use App\Http\Controllers\Api\ApiNoteController;
 use App\Http\Controllers\Api\ApiNotificationController;
 use App\Http\Controllers\Api\ApiScheduleController;
@@ -26,16 +27,23 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/hello', function () {
+    return response()->json(['message' => 'Hello World!']);
+});
 Route::post('/line-webhook', [LineController::class, 'webhook']);
 Route::get('/reminder', [ScheduleController::class, 'reminder']);
 Route::controller(ApiAuthController::class)->group(function () {
     Route::post('/login', 'login');
     Route::post('/register', 'register');
+    Route::post('/auth/google', 'googleAuth');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::controller(LineController::class)->group(function () {
         Route::get('/line/test', 'test');
+    });
+    Route::controller(ApiGoogleScheduleController::class)->group(function() {
+        Route::post('/google-schedule', 'store');
     });
     Route::controller(ApiScheduleController::class)->group(function () {
         Route::post('/schedule/save', 'save');
@@ -58,6 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::controller(ApiUserController::class)->group(function () {
         Route::get('/user', 'index');
+        Route::post('/user/update-is-sync-google', 'updateIsSyncGoogle');
         Route::post('/user/update-profile', 'updateProfile');
         Route::post('/user/update-password', 'updatePassword');
     });

@@ -57,6 +57,11 @@ class User extends Authenticatable
         'line_id',
         'email',
         'password',
+        'photo_profile',
+        'google_token',
+        'google_access_token',
+        'last_login',
+        'is_sync_google',
     ];
 
 

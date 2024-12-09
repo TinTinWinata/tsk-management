@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\ScheduleController;
+use App\Models\GoogleSchedule;
 use App\Models\Schedule;
 use App\Models\Space;
 use Illuminate\Http\Request;
@@ -27,15 +28,15 @@ class ApiScheduleController extends ApiController
         $schedules = [];
         $i = 0;
 
-        $start_date = null;
-        $end_date = null;
+        $startDate = null;
+        $endDate = null;
 
         foreach ($data as $date => $detail) {
             if ($i === 0) {
-                $start_date =  $date;
+                $startDate =  $date;
             }
             if ($i === count($data) - 1) {
-                $end_date = $date;
+                $endDate = $date;
             }
             foreach ($detail['schedules'] as $key => $schedule) {
                 $new_schedule = new Schedule();
@@ -49,11 +50,33 @@ class ApiScheduleController extends ApiController
         }
 
         $model->schedules()
-            ->whereBetween('date', [$start_date, $end_date])
+            ->whereBetween('date', [$startDate, $endDate])
             ->delete();
 
         $model->schedules()->saveMany($schedules);
+
+        if($req->has('space_id') == false && $model->is_sync_google) {
+            $this->syncGoogle($schedules, $startDate, $endDate, $model);
+        }
+
         return $this->sendResponse(count($schedules), "Succesfully saved schedules");
     }
 
+    private function syncGoogle(array $schedules, $startDate, $endDate, $user){
+        $deletedGoogleSchedules = GoogleSchedule::where('user_id', $user->id)
+            ->where('date', '>=', $startDate)
+            ->where('date', '<=', $endDate)
+            ->whereNotIn('schedule_id', array_map(function($schedule) {
+                return $schedule->id;
+            }, $schedules))
+            ->get();
+        foreach($schedules as $schedule) {
+            ApiGoogleScheduleController::setAccessToken($user);
+            ApiGoogleScheduleController::sync($schedule, $user);
+        }
+        foreach($deletedGoogleSchedules as $deletedGoogleSchedule) {
+            ApiGoogleScheduleController::setAccessToken($user);
+            ApiGoogleScheduleController::delete($deletedGoogleSchedule);
+        }
+    }
 }

@@ -90,7 +90,7 @@ class ScheduleController extends Controller
         $schedules = Schedule::where('scheduleable_id', $schedulable_id)
             ->where('date', '>=', $first_date)
             ->where('date', '<=', $last_date)
-            ->with('assignee')
+            ->with(['assignee:id,name,email,photo_profile,is_sync_google'])
             ->orderBy('position', 'asc')->get();
         foreach ($schedules as $schedule) {
             $date_str = Carbon::parse($schedule->date)->format('Y-m-d');
