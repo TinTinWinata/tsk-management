@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiNoteController;
 use App\Http\Controllers\Api\ApiNotificationController;
 use App\Http\Controllers\Api\ApiScheduleController;
 use App\Http\Controllers\Api\ApiSpaceController;
+use App\Http\Controllers\Api\ApiSpaceLogController;
 use App\Http\Controllers\Api\ApiUserController;
 use App\Http\Controllers\LineController;
 use App\Http\Controllers\ScheduleController;
@@ -65,6 +66,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/space/schedule/{space}', 'schedules');
         Route::patch('/space/{space}', 'update');
         Route::delete('/space/{space}', 'delete');
+    });
+    Route::controller(ApiSpaceLogController::class)->group(function () {
+        Route::get('/space-log/{id}', 'show');
     });
     Route::controller(ApiUserController::class)->group(function () {
         Route::get('/user', 'index');

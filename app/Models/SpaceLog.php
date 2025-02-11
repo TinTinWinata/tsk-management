@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
-class Space extends Model
+class SpaceLog extends Model
 {
     use HasFactory;
 
@@ -15,24 +15,18 @@ class Space extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'name',
         'description',
-        'owner_id'
+        'space_id',
+        'user_id'
     ];
 
-    public function schedules() {
-        return $this->morphMany(Schedule::class, 'scheduleable');
+    public function space(){
+        return $this->belongsTo(Space::class);
     }
 
-    public function spaceLogs(){
-        return $this->hasMany(SpaceLog::class);
+    public function user(){
+        return $this->belongsTo(User::class);
     }
-
-    public function users(){
-        return $this->belongsToMany(User::class);
-    }
-
-    protected $casts = [];
 
     protected static function boot()
     {
@@ -43,5 +37,4 @@ class Space extends Model
             }
         });
     }
-
 }

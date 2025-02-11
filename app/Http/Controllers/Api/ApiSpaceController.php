@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\SpaceLogController;
 use App\Http\Requests\Api\ApiSpaceRequest;
 use App\Models\Space;
 use Illuminate\Support\Facades\Auth;
@@ -47,6 +48,7 @@ class ApiSpaceController extends ApiController
             }
         }
         $space->update($data);
+        SpaceLogController::createSpaceLog($space->id, $user->name . " updated the space.", $user->id);
         return $this->sendResponse($space, "Succesfully update spaces");
     }
     public function schedules(Space $space) {
@@ -67,6 +69,7 @@ class ApiSpaceController extends ApiController
                 NotificationController::createSpaceInvitationNotification($space, $user_id);
             }
         }
+        SpaceLogController::createSpaceLog($space->id, $user->name . " created the space.", $user->id);
         return $this->sendResponse($space, "Succesfully create spaces");
     }
 }

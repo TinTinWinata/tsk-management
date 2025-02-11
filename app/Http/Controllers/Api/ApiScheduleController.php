@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\SpaceLogController;
 use App\Models\GoogleSchedule;
 use App\Models\Schedule;
 use App\Models\Space;
@@ -92,9 +93,13 @@ class ApiScheduleController extends ApiController
 
         $model->schedules()->saveMany($schedules);
 
-        // if($req->has('space_id') == false && $model->is_sync_google) {
-        //     $this->syncGoogle($schedules, $startDate, $endDate, $model);
-        // }
+        if($req->has('space_id')) {
+            SpaceLogController  ::createSpaceLog($model->id, $req->user()->name . " updating space schedules.", $req->user()->id);
+        }
+
+        if($req->has('space_id') == false && $model->is_sync_google) {
+            $this->syncGoogle($schedules, $startDate, $endDate, $model);
+        }
 
         return $this->sendResponse(count($schedules), "Succesfully saved schedules");
     }
