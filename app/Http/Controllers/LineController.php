@@ -33,9 +33,13 @@ class LineController extends Controller
             'schedules' => 'See your task for today!',
             'help' => 'We\'re always here to help you!',
             'notes' => 'Get all notes from your our web app!',
-            'addnote' => 'Add a note to your notebook \'/addNote [Note Title]:[Note Content]\'',
+            'addNote' => 'Add a note to your notebook \'/addNote [Note Title]:[Note Content]\'',
+            'addSchedule' => 'Add your schedule for today \'/addSchedule [Schedule Description]\'',
             'note' => 'Get your note in our web app \'/note [Note Number]\'',
-            'myid' => 'Get your Line ID'
+            'myid' => 'Get your Line ID',
+            'markSchedule' => 'Mark your schedule as done \'/markSchedule [Schedule Number]\'',
+            'editNote' => 'Edit your note \'/editNote [Note Number]:[New Title]:[New Content]\'',
+            'deleteNote' => 'Delete your note \'/deleteNote [Note Number]\''
         ];
     }
 
@@ -79,6 +83,22 @@ class LineController extends Controller
         $api->pushMessage($push);
     }
 
+    public function deleteNote($text, $user, $reply_token)
+    {
+        $idx = intval($text) - 1;
+        $replyText = "";
+        try {
+            if ($user->notes[$idx]) {
+                $note = $user->notes[$idx];
+                $note->delete();
+                $replyText = "Succesfully delete '" . $note->title . "' note! Thankyou! 😊";
+            }
+        } catch (Exception $e) {
+            $replyText = "Oh no, look's like your note cannot be found! 😢";
+        }
+        return $this->handleSuccessResponse($replyText, $reply_token);
+    }
+
     public function replyMessage($text, $reply_token)
     {
         $api = LineController::getMessagingApi();
@@ -96,6 +116,7 @@ class LineController extends Controller
 
         $email = $data[0];
         $password = $data[1];
+        Log::debug($email . $password);
         if (Auth::attempt(['email' => $email, 'password' => $password])) {
             $user = User::where('email', $email)->first();
 
@@ -105,6 +126,7 @@ class LineController extends Controller
             $this->replyMessage("Succesfully integrated to Tsk Management 😊!\n\nWelcome, " . $user->name . "\n\n Try to '/help' to see more information.", $reply_token);
             return response()->json('Succesfully response', 200);
         };
+        $this->replyMessage("Ups, looks like you're having a wrong credentials!", $reply_token);
         return response()->json('User not found', 400);
     }
 
@@ -130,7 +152,66 @@ class LineController extends Controller
         return $this->handleSuccessResponse('This is your line id 😊: ' . $line_id, $reply_token);
     }
 
-    public function addnote($text, $user, $reply_token)
+    public function addSchedule($text, $user, $reply_token)
+    {
+        $data = $text;
+
+        $replyText = "";
+        $schedule = Schedule::create([
+            'title' => $data,
+            'date' => now(),
+            'is_done' => false,
+            'scheduleable_id' => $user->id,
+            'scheduleable_type' => User::class
+        ]);
+        if ($schedule) {
+            $replyText = "Succesfully create '" . $schedule->title . "' schedule! Thankyou! 😊";
+        } else {
+            $replyText = "Oh no, look's like the schedule can't be created! 😢";
+        }
+        return $this->handleSuccessResponse($replyText, $reply_token);
+    }
+
+    public function markSchedule($text, $user, $reply_token){
+        $replyText = "";
+        try {
+            $idx = intval($text) - 1;
+            if ($user->schedulesToday[$idx]) {
+                $schedule = $user->schedulesToday[$idx];
+                $schedule->is_done = !$schedule->is_done;
+                $schedule->save();
+                $replyText = "Successfully marked '" . $schedule->title . "' as " . ($schedule->is_done ? "done" : "undone") . "!";
+            }
+        } catch (Exception $e) {
+            $replyText = "Oh no, look's like your schedule cannot be found! 😢";
+        }
+        return $this->handleSuccessResponse($replyText, $reply_token);
+    }
+
+    public function editNote($text, $user, $reply_token)
+    {
+        $data = explode(":", $text);
+
+        $idx = intval($data[0]) - 1;
+        $title = $data[1];
+        $content = $data[2];
+
+        $replyText = "";
+        try {
+            if ($user->notes[$idx]) {
+                $note = $user->notes[$idx];
+                $note->title = $title;
+                $note->content = $content;
+                $note->save();
+                $replyText = "Succesfully edit '" . $note->title . "' note! Thankyou! 😊";
+            }
+        } catch (Exception $e) {
+            $replyText = "Oh no, look's like your note cannot be found! 😢";
+        }
+        return $this->handleSuccessResponse($replyText, $reply_token);
+    }
+
+    public function addNote($text, $user, $reply_token)
     {
         $data = explode(":", $text);
 
@@ -144,7 +225,7 @@ class LineController extends Controller
             'user_id' => $user->id
         ]);
         if ($note) {
-            $replyText = "Succesfully create " . $title . " notes! Thankyou! 😊";
+            $replyText = "Succesfully create '" . $title . "' note! Thankyou! 😊";
         } else {
             $replyText = "Oh no, look's like the note can't be created! 😢";
         }
@@ -202,14 +283,18 @@ class LineController extends Controller
         return $this->handleSuccessResponse($replyText, $reply_token);
     }
 
+    public function isGuestCommand($command){
+        return in_array($command, ['login', 'help']);
+    }
+
     public function mediator($text, $line_id, $reply_token)
     {
         $user = User::where('line_id', $line_id)->first();
-        if (!$user) {
-            return $this->handleAuthenticated($reply_token);
-        }
         foreach ($this->commands as $command => $commandText) {
             if (Str::startsWith($text, $this->prefix . $command)) {
+                if(!$this->isGuestCommand($command) && !$user){
+                    return $this->handleAuthenticated($reply_token);
+                }
                 $parts = explode(' ', $text);
                 array_shift($parts);
                 $extractedText = trim(implode(' ', $parts));

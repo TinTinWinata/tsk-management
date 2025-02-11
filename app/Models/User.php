@@ -38,7 +38,7 @@ class User extends Authenticatable
 
     public function schedulesToday()
     {
-        return $this->hasMany(Schedule::class)
+        return $this->morphMany(Schedule::class, 'scheduleable')
             ->whereDate('date', Carbon::today());
     }
 
