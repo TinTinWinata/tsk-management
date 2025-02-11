@@ -44,10 +44,12 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::controller(ApiGoogleScheduleController::class)->group(function() {
         Route::post('/google-schedule', 'store');
+        Route::get('/google/test', 'test');
     });
     Route::controller(ApiScheduleController::class)->group(function () {
         Route::post('/schedule/save', 'save');
         Route::get('/schedule', 'index');
+        Route::post('/schedule/ai', 'storeAi');
     });
     Route::controller(ApiAuthController::class)->group(function () {
         Route::get('/me', 'me');

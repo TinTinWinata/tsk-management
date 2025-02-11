@@ -6,12 +6,45 @@ use App\Http\Controllers\ScheduleController;
 use App\Models\GoogleSchedule;
 use App\Models\Schedule;
 use App\Models\Space;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ApiScheduleController extends ApiController
 {
+    public function storeAi(Request $request){
+        $text = $request->get('text');
+        $response = Http::post(env('API_AI_BACKEND') . '/api/predict', [
+            'text' => $text,
+        ]);
+        if ($response->successful()) {
+            $user = $request->user();
+            $data =   $response->json();
+            $date = $data['date'];
+            $intent = $data['intent'];
+            if($date && $intent) {
+                $schedule = $user->schedules()->create([
+                    'date' => $date,
+                    'title' => $intent,
+                    'is_done' => false,
+                    'position' => 0
+                ]);
+            Log::debug('[Created Schedule From AI]', [$schedule]);
+            try{
+                if($user->is_sync_google) {
+                    ApiGoogleScheduleController::setAccessToken($user);
+                    ApiGoogleScheduleController::create($schedule, $user);
+                }
+            } catch(Exception $err) {
+                Log::error('[Error Create Google]', [$err]);
+            }
+            return $this->sendResponse($schedule, "Succesfully created schedule");
+           }
+        }
+        return $this->sendError(null, [], 500);
+    }
     public function index() {
         $schedules = ScheduleController::getSchedules(ScheduleController::getDates());
         return $this->sendResponse($schedules, "Succesfully get schedules data");
@@ -49,15 +82,19 @@ class ApiScheduleController extends ApiController
             $i++;
         }
 
-        $model->schedules()
+        Log::debug('Inserted schedules', [$schedules]);
+        Log::debug('Total Inserted Schedules', [count($schedules)]);
+
+        $deletedSchedules = $model->schedules()
             ->whereBetween('date', [$startDate, $endDate])
             ->delete();
+        Log::debug('Deleted schedules', [$deletedSchedules]);
 
         $model->schedules()->saveMany($schedules);
 
-        if($req->has('space_id') == false && $model->is_sync_google) {
-            $this->syncGoogle($schedules, $startDate, $endDate, $model);
-        }
+        // if($req->has('space_id') == false && $model->is_sync_google) {
+        //     $this->syncGoogle($schedules, $startDate, $endDate, $model);
+        // }
 
         return $this->sendResponse(count($schedules), "Succesfully saved schedules");
     }

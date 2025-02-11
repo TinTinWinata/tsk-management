@@ -8,6 +8,7 @@ use App\Models\Schedule;
 use App\Models\User;
 use DateTime;
 use DateTimeZone;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 
 use Google\Client;
@@ -42,6 +43,21 @@ class ApiGoogleScheduleController extends ApiController
         $service->events->delete('primary', $googleSchedule->google_event_id);
         $googleSchedule->delete();
         Log::debug('[Delete Google Schedule] Successfully Deleted!');
+    }
+
+    public function test() {
+        $user = Auth::user();
+        if(empty($user->google_access_token)) {
+            return $this->sendResponse(['is_valid' => false], "Google Access Token Not Found!");
+        }
+        try {
+            $this->setAccessToken($user);
+            $service = new Calendar(ApiGoogleScheduleController::$client);
+            $service->calendarList->listCalendarList();
+            return $this->sendResponse(['is_valid' => true], "Google Access Token is valid!");
+        } catch (Exception $e) {
+            return $this->sendResponse(['is_valid' => false], "Google Access Token is invalid!");
+        }
     }
 
     public static function create(Schedule $schedule, User $user) {
@@ -110,7 +126,11 @@ class ApiGoogleScheduleController extends ApiController
         if(empty($user)) {
             $user = Auth::user();
         }
+        if(!$user->google_access_token) {
+            return false;
+        }
         ApiGoogleScheduleController::getClient()->setAccessToken($user->google_access_token);
+        return true;
     }
 
     public static function checkAccessToken($user): bool {

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('position')->nullable();
             $table->boolean('is_done');
             $table->uuid('scheduleable_id');
-            $table->string('scheduleable_type');
+            $table->string('scheduleable_type'); // user, space
             $table->index(['scheduleable_id', 'scheduleable_type']);
             $table->timestamps();
         });
